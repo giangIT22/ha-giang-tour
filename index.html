@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hà Giang Quest</title>
-<meta name="description" content="Bản đồ phiêu lưu tương tác cho chuyến Hà Giang 3 ngày 2 đêm: intro xe sang chạy xuyên đêm, đôi bạn mặc trang phục H'Mông đi qua 18 điểm dừng.">
+<meta name="description" content="Bản đồ phiêu lưu tương tác cho chuyến Hà Giang 3 ngày 2 đêm: xuất phát từ Hà Nội, Bắc Ninh hoặc bay từ TP Hồ Chí Minh, đôi bạn mặc trang phục H'Mông đi qua 18 điểm dừng.">
 <meta name="theme-color" content="#20245e">
 <meta property="og:title" content="Hà Giang Quest">
 <meta property="og:description" content="Bản đồ phiêu lưu Hà Giang 10–13/10 cho 2 người.">
@@ -159,6 +159,17 @@ body{
 .ghost:hover{background:rgba(255,255,255,.12)}
 .ghost:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 .btn-sm{font-size:13px;padding:8px 12px 6px;box-shadow:0 3px 0 var(--ink)}
+/* hand in hand + suitcase */
+#scene .hold-l .arm-l{animation:none!important;transform:rotate(22deg)}
+#scene .hold-r .arm-r{animation:none!important;transform:rotate(-22deg)}
+#scene .pull .arm-l{animation:none!important;transform:rotate(35deg)}
+.cw{transform-box:fill-box;transform-origin:center}
+.walking .cw{animation:spin .35s linear infinite}
+.blink{animation:blink 1s steps(1) infinite}
+.blink2{animation:blink .7s steps(1) infinite .35s}
+@keyframes blink{50%{opacity:.1}}
+#scene.night .pwin{fill:#ffe39a}
+.fade{position:absolute;inset:0;background:#05060f;opacity:0;pointer-events:none;z-index:2}
 
 /* Panel */
 .daychip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-weight:800;font-size:13px;
@@ -188,7 +199,7 @@ body{
 .finale{position:absolute;inset:0;display:grid;place-items:center;background:rgba(20,22,70,.55);padding:16px}
 .finale .card{max-width:420px;text-align:center;padding:24px 22px}
 @media (prefers-reduced-motion: reduce){
-  .walking *, .waving *, .cheer *, .cloud, .river-flow, .flag, .pulse, .twinkle, .driving .wheel, .ring{animation:none!important}
+  .walking *, .waving *, .cheer *, .cloud, .river-flow, .flag, .pulse, .twinkle, .driving .wheel, .ring, .blink, .blink2{animation:none!important}
   .btn,.tab{transition:none}
 }
 </style>
@@ -246,7 +257,7 @@ img{max-width:100%}
         <div class="chunk card">
           <div class="eyebrow" style="color:var(--pink)">Hoàn thành hành trình</div>
           <h2 class="display text-[34px] font-extrabold leading-none mt-1" id="finaleTitle">Về tới Hà Nội!</h2>
-          <p class="mt-3 text-[15px]">18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.</p>
+          <p class="mt-3 text-[15px]" id="finaleText">18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.</p>
           <p class="hand text-[22px] mt-2" style="color:var(--pink)">Ua tsaug! Hẹn mùa hoa sau nhé.</p>
           <button class="btn btn-pink mt-4" id="replayBtn">Đi lại từ đầu</button>
         </div>
@@ -284,6 +295,7 @@ img{max-width:100%}
 
 <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Intro: lên đường đi Hà Giang">
   <svg id="scene" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax meet" aria-hidden="true"></svg>
+  <div class="fade" id="fade"></div>
   <div class="intro-hud" id="introHud" hidden>
     <div class="flex flex-wrap gap-2">
       <span class="hchip" id="clk">Thứ 7 · 21:52</span>
@@ -299,7 +311,7 @@ img{max-width:100%}
     <div class="bar"><div class="fill" id="routeFill"></div><div class="dot" id="routeDot">
       <svg width="16" height="10" viewBox="0 0 32 18"><path d="M2,12 C2,8 4,7 8,7 L11,3 L22,3 L26,7 C29,7 31,9 31,12 L31,14 L2,14 Z" fill="#1d2160"/><circle cx="9" cy="14" r="3.4" fill="#ffc531"/><circle cx="24" cy="14" r="3.4" fill="#ffc531"/></svg>
     </div></div>
-    <div class="ends"><span id="routeFrom">Hà Nội</span><span id="routeKm">300 km nữa</span><span>Hà Giang</span></div>
+    <div class="ends"><span id="routeFrom">Hà Nội</span><span id="routeKm">300 km nữa</span><span id="routeTo">Hà Giang</span></div>
   </div>
   <div class="phonecard" id="phoneCard" hidden>
     <div class="who">
@@ -309,11 +321,11 @@ img{max-width:100%}
     <div class="lines" id="phoneLines"></div>
   </div>
   <div class="choose" id="choose">
-    <div class="choose-inner">
+    <div class="choose-inner" style="width:min(880px,100%)">
       <div class="eyebrow">Chương mở đầu · Tối thứ 7, 10/10</div>
       <h2 class="title-main mt-1">Hà Giang <span>Quest</span></h2>
       <p class="mt-3 text-[16px] text-indigo-100 mx-auto max-w-[46ch]">Chọn nơi xe đón hai bạn. Một chiếc xe sang màu đen sẽ đưa cả hai lên cao nguyên đá trong đêm.</p>
-      <div class="grid gap-4 sm:grid-cols-2 mt-6">
+      <div class="grid gap-4 sm:grid-cols-3 mt-6">
         <button class="city" type="button" data-origin="hn">
           <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,42 H116" stroke="#1d2160" stroke-width="4"/><path d="M8,42 V26 H112 V42 M8,26 L20,14 L32,26 L44,14 L56,26 L68,14 L80,26 L92,14 L104,26 L112,18 M20,14 H104" fill="none" stroke="#7a6cf0" stroke-width="3.2" stroke-linejoin="round"/><path d="M30,42 V50 M60,42 V50 M90,42 V50" stroke="#1d2160" stroke-width="4"/></svg>
           <span class="cn">Hà Nội</span><span class="cm">~300 km · khoảng 6 tiếng</span><span class="cd">Xe đón 22:00</span>
@@ -321,6 +333,10 @@ img{max-width:100%}
         <button class="city" type="button" data-origin="bn">
           <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,48 H116" stroke="#1d2160" stroke-width="4"/><rect x="40" y="32" width="40" height="16" fill="#ff4f9a" stroke="#1d2160" stroke-width="2.5"/><path d="M22,34 C34,30 40,24 60,22 C80,24 86,30 98,34 C92,32 86,32 80,32 H40 C34,32 28,32 22,34 Z" fill="#1d2160"/><path d="M34,20 C44,18 50,10 60,8 C70,10 76,18 86,20 C80,20 74,20 70,20 H50 C46,20 40,20 34,20 Z" fill="#1d2160"/><rect x="50" y="20" width="20" height="4" fill="#ffc531"/><rect x="55" y="38" width="10" height="10" fill="#1d2160"/></svg>
           <span class="cn">Bắc Ninh</span><span class="cm">~330 km · khoảng 6,5 tiếng</span><span class="cd">Xe đón 21:30</span>
+        </button>
+        <button class="city" type="button" data-origin="hcm">
+          <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,48 H116" stroke="#1d2160" stroke-width="4"/><path d="M18,26 C18,21 24,19 32,19 L92,19 C102,19 108,22 110,26 C108,30 102,32 92,32 L32,32 C24,32 18,30 18,26 Z" fill="#fff" stroke="#1d2160" stroke-width="2.5"/><path d="M20,28 C22,31 26,32 32,32 L92,32 C100,32 106,31 109,28 Z" fill="#0b5cab"/><path d="M24,20 L14,6 L22,6 L36,19 Z" fill="#0b5cab" stroke="#1d2160" stroke-width="2"/><path d="M66,30 L50,44 L58,44 L80,30 Z" fill="#0b5cab" stroke="#1d2160" stroke-width="2"/><path d="M38,24 h40" stroke="#1d2160" stroke-width="2.4" stroke-dasharray="3 3"/></svg>
+          <span class="cn">TP Hồ Chí Minh</span><span class="cm">Bay ~2 tiếng · xe đón ở Nội Bài</span><span class="cd">Ra sân bay 18:00</span>
         </button>
       </div>
       <div class="flex flex-wrap justify-center gap-3 mt-6">
@@ -846,25 +862,35 @@ document.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('i
 window.addEventListener('resize',()=>{const n=NODES[STOPS[cur].node];follow(n.x);});
 
 /* =====================================================================
-   INTRO: choose origin → street at night → phone call → car arrives →
+   INTRO: choose origin → (HCM: airport → flight → Nội Bài) → pickup →
    driver opens the rear door → couple boards → 15s night-to-dawn drive
    ===================================================================== */
 const ORIGINS={
-  hn:{key:'hn',name:'Hà Nội',km:300,dep:22*60,depLabel:'22:00'},
-  bn:{key:'bn',name:'Bắc Ninh',km:330,dep:21*60+30,depLabel:'21:30'}
+  hn:{key:'hn',name:'Hà Nội',km:300,dep:22*60,depLabel:'22:00',sign:'Hà Nội ~300 km',from:'Hà Nội',signTop:'HÀ NỘI'},
+  bn:{key:'bn',name:'Bắc Ninh',km:330,dep:21*60+30,depLabel:'21:30',sign:'Bắc Ninh ~330 km',from:'Bắc Ninh',signTop:'BẮC NINH'},
+  hcm:{key:'hcm',name:'TP Hồ Chí Minh',short:'TP HCM',km:280,flightKm:1160,dep:22*60,depLabel:'22:00',sign:'TP HCM ✈ Nội Bài',from:'Nội Bài',signTop:'SÂN BAY NỘI BÀI',flight:true}
 };
 let origin=ORIGINS.hn;
 function applyOrigin(o){
   origin=o;
-  NODES.HN.name=o.name;
-  $('originSign').textContent=`${o.name} ~${o.km} km`;
-  $('originLabel').textContent=o.name;
-  $('finaleTitle').textContent=`Về tới ${o.name}!`;
-  Object.assign(STOPS[0],{time:o.depLabel,title:`Xuất phát từ ${o.name}`,
-    blurb:`Xe đón hai bạn lúc ${o.depLabel} tối thứ 7, chạy xuyên đêm khoảng ${o.km} km, rạng sáng là tới Hà Giang.`});
-  STOPS[LAST].blurb=`Trả xe, ăn trưa, lên xe khoảng 12:30–13:00, về tới ${o.name} tầm 19h–20h.`;
-  rows[0].querySelector('.t').textContent=o.depLabel;rows[0].querySelector('.n').textContent=STOPS[0].title;
-  rows[LAST].querySelector('.n').textContent=STOPS[LAST].title;
+  const nm=o.short||o.name;
+  NODES.HN.name=nm;
+  $('originSign').textContent=o.sign;
+  $('originLabel').textContent=nm;
+  $('finaleTitle').textContent=`Về tới ${nm}!`;
+  $('finaleText').textContent=o.flight
+    ?'18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, rồi bay chuyến tối thứ 3 về lại TP Hồ Chí Minh.'
+    :'18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.';
+  if(o.flight)Object.assign(STOPS[0],{time:'18:00',title:'Bay từ TP Hồ Chí Minh',
+    blurb:'Ra sân bay lúc 18:00, bay khoảng 2 tiếng, 21:30 hạ cánh Nội Bài. Xe đón ở sảnh lúc 22:00 rồi chạy xuyên đêm lên Hà Giang.',
+    tip:'Chọn chuyến hạ cánh trước 21:30 để kịp giờ xe đón. Nhớ mua thêm hành lý ký gửi cho vali.'});
+  else Object.assign(STOPS[0],{time:o.depLabel,title:`Xuất phát từ ${o.name}`,
+    blurb:`Xe đón hai bạn lúc ${o.depLabel} tối thứ 7, chạy xuyên đêm khoảng ${o.km} km, rạng sáng là tới Hà Giang.`,
+    tip:'Chốt luôn giờ về 12:30–13:00 thứ 3 để kịp về nhà tối.'});
+  STOPS[LAST].blurb=o.flight
+    ?'Trả xe, ăn trưa, lên xe khoảng 12:30–13:00 về sân bay Nội Bài (tới tầm 19h), rồi bay chuyến tối về TP HCM.'
+    :`Trả xe, ăn trưa, lên xe khoảng 12:30–13:00, về tới ${o.name} tầm 19h–20h.`;
+  rows[0].querySelector('.t').textContent=STOPS[0].time;rows[0].querySelector('.n').textContent=STOPS[0].title;
   if(cur===0||cur===LAST)updatePanel(cur,false);
 }
 
@@ -878,7 +904,12 @@ const Snd={ctx:null,master:null,on:true,engine:null,
   ring(){for(let i=0;i<3;i++){this.tone(440,i*.9,.38,'sine',.16);this.tone(480,i*.9,.38,'sine',.16);}},
   horn(){this.tone(392,0,.16,'square',.09);this.tone(494,0,.16,'square',.06);this.tone(392,.24,.28,'square',.09);this.tone(494,.24,.28,'square',.06);},
   thud(){this.tone(85,0,.16,'triangle',.45);},
+  ding(){this.tone(880,0,.45,'sine',.14);this.tone(660,.32,.7,'sine',.14);},
   chime(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone(f,i*.13,.55,'triangle',.16));},
+  roar(dur){if(!this.ctx)return;try{const c=this.ctx,len=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=Math.random()*2-1;const src=c.createBufferSource();src.buffer=buf;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=380;
+    const g=c.createGain(),t=c.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+dur*.4);g.gain.linearRampToValueAtTime(0,t+dur);
+    f.frequency.linearRampToValueAtTime(1300,t+dur*.6);src.connect(f);f.connect(g);g.connect(this.master);src.start(t);src.stop(t+dur+.1);}catch(e){}},
   engineStart(){if(!this.ctx||this.engine)return;const c=this.ctx,o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
     o.type='sawtooth';o.frequency.value=46;o2.type='sine';o2.frequency.value=92;fl.type='lowpass';fl.frequency.value=300;g.gain.value=0;
     o.connect(fl);o2.connect(fl);fl.connect(g);g.connect(this.master);o.start();o2.start();
@@ -889,51 +920,121 @@ const Snd={ctx:null,master:null,on:true,engine:null,
     ['soundBtn','soundBtn2'].forEach(id=>{const b=$(id);b.textContent=v?'Âm thanh: Bật':'Âm thanh: Tắt';b.setAttribute('aria-pressed',v?'true':'false');});}
 };
 
-const intro=$('intro'),scene=$('scene'),chooseEl=$('choose');
+const intro=$('intro'),scene=$('scene'),chooseEl=$('choose'),fadeEl=$('fade');
 let tl=null,E={};
 function sky(v){const o={};for(const k in v)o['--'+k]=v[k];return o;}
 const SKY={
+  sunset:{sky1:'#ff8f6b',sky2:'#ffd89a',far:'#7c5a7a',mid:'#4a3a5a',ground:'#8a6f6a',road:'#5a4b55',walk:'#b39a8a',kerb:'#d6c2b0',line:'#ffffff'},
+  dusk:{sky1:'#3b2d7a',sky2:'#e07a8a',far:'#3a3266',mid:'#2a2650',ground:'#4a4268',road:'#3a3452',walk:'#6a5f80',kerb:'#8a80a0',line:'#d0c8e0'},
   night:{sky1:'#070b2a',sky2:'#1f2a6b',far:'#151a45',mid:'#0f1433',ground:'#1a1f45',road:'#22243a',walk:'#2c3158',kerb:'#4a4f7a',line:'#8b90c4'},
   pre:{sky1:'#2a2370',sky2:'#b0558f',far:'#3a3474',mid:'#24264e',ground:'#2e3462',road:'#33354d',walk:'#4a4c74',kerb:'#62648e',line:'#a9add6'},
   dawn:{sky1:'#f08a6a',sky2:'#ffd59a',far:'#8a7aa0',mid:'#3d5a4a',ground:'#6f9a5a',road:'#55586a',walk:'#a99c86',kerb:'#c9bea6',line:'#f4efe0'},
   day:{sky1:'#6cc8f0',sky2:'#d8f4ff',far:'#7fa9a2',mid:'#3f8a5a',ground:'#8fcb57',road:'#5d6070',walk:'#cbbfa5',kerb:'#e9e2cf',line:'#ffffff'}
 };
 function setSkyVars(v){for(const k in v)intro.style.setProperty('--'+k,v[k]);}
-
-function buildScene(o){
-  const r=rnd(o.key==='hn'?7:11),rv=(a,b)=>a+(b-a)*r();
-  let s=`<defs><linearGradient id="beamG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff7d1" stop-opacity=".7"/><stop offset="1" stop-color="#fff7d1" stop-opacity="0"/></linearGradient>
+const DEFS=`<defs><linearGradient id="beamG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff7d1" stop-opacity=".7"/><stop offset="1" stop-color="#fff7d1" stop-opacity="0"/></linearGradient>
   <radialGradient id="glowG"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".85"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>
   <radialGradient id="sunG"><stop offset="0" stop-color="#fff1b0" stop-opacity=".85"/><stop offset="1" stop-color="#ffb24a" stop-opacity="0"/></radialGradient></defs>`;
-  let st='';for(let i=0;i<110;i++)st+=`<circle class="twinkle" style="animation-delay:${rv(0,2).toFixed(2)}s" cx="${rv(-900,2100).toFixed(0)}" cy="${rv(-500,400).toFixed(0)}" r="${rv(.8,2.4).toFixed(1)}" fill="#fff"/>`;
-  s+=`<g id="sStars">${st}</g>`;
+function starsSvg(r,n,yMax){const rv=(a,b)=>a+(b-a)*r();let st='';for(let i=0;i<n;i++)st+=`<circle class="twinkle" style="animation-delay:${rv(0,2).toFixed(2)}s" cx="${rv(-900,2100).toFixed(0)}" cy="${rv(-500,yMax).toFixed(0)}" r="${rv(.8,2.4).toFixed(1)}" fill="#fff"/>`;return st;}
+
+/* ---------- Props: airliner, suitcase, hand-in-hand pair ---------- */
+/* Original blue-and-white airliner (no airline name or logo), facing right, gear on y=0 */
+function plane(p,opt){
+  opt=opt||{};const id=n=>p?` id="${p}${n}"`:'';
+  const blue='#0b5cab',blue2='#083f7a',gold='#d8b25a';
+  let win='';for(let wx=-215;wx<=200;wx+=21){if(wx>196&&wx<255)continue;win+=`<rect class="pwin" x="${wx}" y="-168" width="10" height="13" rx="4.5" fill="#bfe3ff"/>`;}
+  const gear=opt.gearUp?'':`<g${id('Gear')}><path d="M232,-104 L232,-14" stroke="#5b6b7c" stroke-width="6"/><circle cx="232" cy="-11" r="11" fill="#1b1d24"/><path d="M-58,-104 L-58,-18" stroke="#5b6b7c" stroke-width="8"/><circle cx="-70" cy="-14" r="14" fill="#1b1d24"/><circle cx="-44" cy="-14" r="14" fill="#1b1d24"/><circle cx="-70" cy="-14" r="5" fill="#8d93a3"/><circle cx="-44" cy="-14" r="5" fill="#8d93a3"/></g>`;
+  return `${opt.gearUp?'':'<ellipse cx="0" cy="2" rx="250" ry="10" fill="rgba(0,0,0,.22)"/>'}
+  <path d="M-10,-142 L-125,-205 L-155,-205 L-80,-142 Z" fill="#c4d2e3"/>
+  <path d="M-232,-176 L-300,-305 L-260,-305 L-172,-182 Z" fill="${blue}" stroke="${blue2}" stroke-width="2"/>
+  <path d="M-284,-288 L-262,-288 L-246,-262 L-270,-262 Z" fill="${gold}"/>
+  <path d="M-300,-178 C-290,-196 -262,-196 -232,-196 L240,-196 C282,-196 304,-176 306,-152 C306,-128 286,-106 250,-104 L-200,-104 C-240,-104 -280,-130 -300,-178 Z" fill="#f7fafc" stroke="#9fb3c8" stroke-width="2"/>
+  <path d="M-272,-134 L250,-134 C282,-134 300,-140 305,-146 C302,-120 286,-106 250,-104 L-200,-104 C-230,-104 -256,-116 -272,-134 Z" fill="${blue}"/>
+  <path d="M-286,-145 L304,-145" stroke="${gold}" stroke-width="3"/>
+  ${win}
+  <path d="M264,-178 L288,-176 L297,-163 L268,-165 Z" fill="#14324f"/>
+  <rect x="226" y="-188" width="24" height="64" rx="8" fill="#1b2a3b"/>
+  <g${id('Door')}><rect x="226" y="-188" width="24" height="64" rx="8" fill="#eef3f9" stroke="#7d93ab" stroke-width="2"/><rect x="230" y="-176" width="16" height="12" rx="4" fill="#bfe3ff"/></g>
+  <rect x="-206" y="-186" width="20" height="58" rx="7" fill="none" stroke="#9fb3c8" stroke-width="2"/>
+  <path d="M-248,-170 L-306,-150 L-286,-146 L-224,-160 Z" fill="${blue2}"/>
+  <path d="M60,-132 L-60,-132 L-172,-80 L-126,-80 Z" fill="#dfe8f2" stroke="#9fb3c8" stroke-width="2"/>
+  <rect x="-32" y="-114" width="88" height="32" rx="16" fill="#e7eef6" stroke="#9fb3c8" stroke-width="2"/><rect x="-32" y="-114" width="20" height="32" rx="9" fill="${blue}"/><ellipse cx="55" cy="-98" rx="7" ry="14" fill="#2b3a4c"/>
+  ${gear}
+  <circle class="blink" cx="0" cy="-199" r="5" fill="#ff3b3b"/><circle class="blink2" cx="-300" cy="-304" r="4.5" fill="#ffffff"/><circle class="blink" cx="-170" cy="-80" r="4.5" fill="#3bff7a"/>`;
+}
+function suitcase(){
+  return `<rect x="-6" y="-82" width="3.5" height="32" rx="1.5" fill="#9aa0ad"/><rect x="5" y="-82" width="3.5" height="32" rx="1.5" fill="#9aa0ad"/><rect x="-9" y="-86" width="20" height="6" rx="3" fill="#1d2160"/>
+  <rect x="-18" y="-54" width="38" height="50" rx="8" fill="#ffc531" stroke="#1d2160" stroke-width="3"/>
+  <path d="M-8,-50 v42 M2,-50 v42 M12,-50 v42" stroke="#e0a400" stroke-width="2"/>
+  <circle cx="-4" cy="-36" r="6" fill="#ff4f9a"/><rect x="6" y="-25" width="10" height="7" rx="2" fill="#11b3ae"/>
+  <g class="cw"><circle cx="-10" cy="-2" r="4.5" fill="#1d2160"/><path d="M-13,-2 h6" stroke="#c8cbe8" stroke-width="1.4"/></g>
+  <g class="cw"><circle cx="12" cy="-2" r="4.5" fill="#1d2160"/><path d="M9,-2 h6" stroke="#c8cbe8" stroke-width="1.4"/></g>`;
+}
+/* boy: one hand pulls the suitcase, the other holds the girl's hand. Local frame faces right; flip for left. */
+function duo(pid,size){
+  const k=(size||2.2)/2.2;
+  return `<g id="${pid}"><g transform="scale(${k})"><g class="flip">
+    <g id="${pid}Case"><g transform="translate(-105,0) rotate(18)">${suitcase()}</g></g>
+    <g id="${pid}Boy" class="hold-r pull"><g transform="translate(-36,0)">${person(Object.assign({},BOY,{scale:2.2}))}</g></g>
+    <g id="${pid}Girl" class="hold-l"><g transform="translate(36,2)">${person(Object.assign({},GIRL,{scale:2.2}))}</g></g>
+  </g></g></g>`;
+}
+function face(e,dir){e.querySelector('.flip').setAttribute('transform',dir<0?'scale(-1,1)':'');}
+function terminal(cx,t1,t2){
+  let panes='';for(let i=0;i<12;i++)panes+=`<rect class="win" x="${-246+i*41}" y="-188" width="34" height="88" fill="#ffe7a3" opacity="0"/><rect x="${-246+i*41}" y="-188" width="34" height="88" fill="#7fd0ff" opacity=".35"/>`;
+  return `<g transform="translate(${cx},600)"><rect x="-262" y="-212" width="524" height="212" fill="#2c3e63" stroke="#1d2160" stroke-width="3"/>${panes}
+  <path d="M-292,-210 L0,-252 L292,-210 Z" fill="#e8eef6" stroke="#1d2160" stroke-width="3"/>
+  <rect x="-232" y="-310" width="464" height="46" rx="9" fill="#0b5cab" stroke="#ffffff" stroke-width="3"/>
+  <text x="0" y="-279" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="25" fill="#ffffff">${t1}</text>
+  <rect x="-70" y="-86" width="140" height="22" rx="5" fill="#ffc531" stroke="#1d2160" stroke-width="2"/>
+  <text x="0" y="-70" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="13" fill="#1d2160">${t2}</text>
+  <rect x="-44" y="-60" width="88" height="60" fill="#bfe8ff" stroke="#1d2160" stroke-width="3"/><path d="M0,-60 v60" stroke="#1d2160" stroke-width="2.5"/></g>`;
+}
+function tower(x){return `<g transform="translate(${x},600)"><rect x="-14" y="-262" width="28" height="262" fill="#d7dde8" stroke="#1d2160" stroke-width="3"/><path d="M-42,-262 L42,-262 L32,-304 L-32,-304 Z" fill="#7fd0ff" stroke="#1d2160" stroke-width="3"/><rect x="-46" y="-314" width="92" height="12" fill="#1d2160"/><circle class="blink" cx="0" cy="-326" r="5" fill="#ff3b3b"/></g>`;}
+function stairs(x0,y0,x1,y1){
+  const n=11;let st='';
+  for(let i=0;i<n;i++){const a=i/n,b=(i+1)/n,xa=x0+(x1-x0)*a,ya=y0+(y1-y0)*a,xb=x0+(x1-x0)*b,yb=y0+(y1-y0)*b;st+=`<path d="M${xa.toFixed(1)},${ya.toFixed(1)} V${yb.toFixed(1)} H${xb.toFixed(1)}" fill="none" stroke="#5b6b7c" stroke-width="4"/>`;}
+  return `<rect x="${x0-70}" y="${y0-34}" width="${x1-x0+70}" height="26" rx="6" fill="#ffc531" stroke="#1d2160" stroke-width="3"/>
+  <circle cx="${x0-40}" cy="${y0-8}" r="10" fill="#1d2160"/><circle cx="${x1-30}" cy="${y0-8}" r="10" fill="#1d2160"/>
+  <path d="M${x0-10},${y0-34} L${x1-6},${y1+10} L${x1-6},${y0-34} Z" fill="#e5e9f0" stroke="#1d2160" stroke-width="3"/>${st}
+  <path d="M${x0},${y0-62} L${x1},${y1-62}" stroke="#1d2160" stroke-width="4"/>
+  <path d="M${x0},${y0-34} v-28 M${(x0+x1)/2},${(y0+y1)/2} v-62 M${x1},${y1} v-62" stroke="#1d2160" stroke-width="3"/>`;
+}
+function cloud(x,y,s,fill,op){return `<g transform="translate(${x.toFixed(0)},${y.toFixed(0)}) scale(${s.toFixed(2)})" opacity="${op}"><path d="M-40,0 C-48,-2 -48,-18 -34,-18 C-32,-32 -10,-34 -4,-22 C2,-36 28,-34 28,-18 C44,-20 48,0 36,0 Z" fill="${fill}"/></g>`;}
+function skylineSvg(r,x0,x1,base,cls){const rv=(a,b)=>a+(b-a)*r();let s='',x=x0;
+  while(x<x1){const w=rv(50,110),h=rv(70,230);s+=`<rect x="${x.toFixed(0)}" y="${(base-h).toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" class="${cls}"/>`;
+    for(let wy=base-h+12;wy<base-14;wy+=18)for(let wx=x+8;wx<x+w-10;wx+=14)if(r()<.3)s+=`<rect class="win" x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="6" height="8" fill="#ffd86b" opacity="0"/>`;
+    x+=w+rv(0,14);}
+  return s;}
+
+/* ---------- Car scene (pickup + drive) ---------- */
+function buildScene(o){
+  const r=rnd(o.key==='bn'?11:7),rv=(a,b)=>a+(b-a)*r();
+  scene.classList.remove('night');
+  let s=DEFS;
+  s+=`<g id="sStars">${starsSvg(r,110,400)}</g>`;
   s+=`<g id="sMoon" transform="translate(980,120)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/><circle cx="-8" cy="-6" r="5" fill="#efe2a6"/><circle cx="9" cy="8" r="3.5" fill="#efe2a6"/></g>`;
   s+=`<g id="sSun" transform="translate(880,600)"><circle r="130" fill="url(#sunG)"/><circle r="48" fill="#ffc35a"/></g>`;
-
-  /* far layer: city skyline → landmark → hills → karst */
-  let far='',x=-900;
-  while(x<1450){const w=rv(46,92),h=rv(60,210);far+=`<rect x="${x.toFixed(0)}" y="${(472-h).toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" class="f-far"/>`;
-    for(let wy=472-h+12;wy<456;wy+=18)for(let wx=x+8;wx<x+w-10;wx+=14)if(r()<.33)far+=`<rect class="win" x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="6" height="8" fill="#ffd86b"/>`;
-    x+=w+rv(0,10);}
-  if(o.key==='hn'){
+  let far=skylineSvg(r,-900,1450,472,'f-far').replace(/opacity="0"/g,'');
+  if(o.key==='bn'){
+    far+=`<g transform="translate(1760,472)" class="f-far"><rect x="-70" y="-40" width="140" height="40"/><path d="M-120,-36 C-90,-44 -70,-56 0,-62 C70,-56 90,-44 120,-36 C100,-40 80,-40 70,-40 H-70 C-80,-40 -100,-40 -120,-36 Z"/><rect x="-40" y="-90" width="80" height="30"/><path d="M-80,-86 C-60,-92 -40,-106 0,-110 C40,-106 60,-92 80,-86 C70,-88 60,-88 40,-88 H-40 C-60,-88 -70,-88 -80,-86 Z"/></g>`;
+  } else if(o.key==='hcm'){
+    far+=`<g transform="translate(1700,472)" class="f-far"><rect x="-240" y="-60" width="480" height="60"/><path d="M-260,-60 L0,-96 L260,-60 Z"/><rect x="300" y="-180" width="22" height="180"/><path d="M280,-180 L342,-180 L334,-206 L288,-206 Z"/></g>`;
+  } else {
     far+=`<rect x="1460" y="428" width="620" height="8" class="f-far"/>`;
     let tr='M1460,428';for(let bx=1460;bx<2080;bx+=40)tr+=` L${bx+20},398 L${bx+40},428`;
     far+=`<path d="${tr} M1480,398 H2060" fill="none" class="s-far" stroke-width="5"/>`;
     for(let px=1500;px<2080;px+=120)far+=`<rect x="${px}" y="436" width="12" height="36" class="f-far"/>`;
-  } else {
-    far+=`<g transform="translate(1760,472)" class="f-far"><rect x="-70" y="-40" width="140" height="40"/><path d="M-120,-36 C-90,-44 -70,-56 0,-62 C70,-56 90,-44 120,-36 C100,-40 80,-40 70,-40 H-70 C-80,-40 -100,-40 -120,-36 Z"/><rect x="-40" y="-90" width="80" height="30"/><path d="M-80,-86 C-60,-92 -40,-106 0,-110 C40,-106 60,-92 80,-86 C70,-88 60,-88 40,-88 H-40 C-60,-88 -70,-88 -80,-86 Z"/></g>`;
   }
   for(let hx=2120;hx<2800;hx+=rv(120,200))far+=`<path d="M${hx-130},472 C${hx-70},${rv(360,410)} ${hx+70},${rv(360,410)} ${hx+130},472 Z" class="f-far"/>`;
   for(let kx=2700;kx<4200;kx+=rv(60,120)){const w=rv(50,95),h=rv(110,250);
     far+=`<path d="M${kx-w},472 C${kx-w*.8},${472-h*.6} ${kx-w*.35},${472-h} ${kx},${472-h} C${kx+w*.35},${472-h} ${kx+w*.8},${472-h*.6} ${kx+w},472 Z" class="f-far"/>`;}
   s+=`<g id="sFar">${far}</g>`;
   s+=`<rect x="-3000" y="462" width="9000" height="12" class="f-ground"/>`;
-
-  /* mid layer (far roadside) */
   let mid='';
   [120,560,1000,1440,1880,2320].forEach(lx=>{mid+=`<g><rect x="${lx-3}" y="300" width="6" height="170" class="f-mid"/><path d="M${lx},306 q0,-16 28,-16 h8" fill="none" class="s-mid" stroke-width="5"/><circle class="glow" cx="${lx+38}" cy="300" r="74" fill="url(#glowG)"/><rect class="glow" x="${lx+29}" y="292" width="18" height="8" rx="3" fill="#ffe7a3"/></g>`;});
-  const sign=(sx,t1,t2,c)=>`<g transform="translate(${sx},468)"><rect x="-3" y="-120" width="6" height="120" class="f-mid"/><rect x="157" y="-120" width="6" height="120" class="f-mid"/><rect x="-14" y="-176" width="188" height="62" rx="8" fill="${c||'#1f7a4d'}" stroke="#fff" stroke-width="3"/><text x="80" y="-151" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#fff">${t1}</text><text x="80" y="-128" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="14" fill="#fff">${t2}</text></g>`;
-  mid+=sign(150,o.name.toUpperCase(),`Hà Giang ${o.km} km →`);
+  const sign=(sx,t1,t2,c,w)=>{w=w||188;return `<g transform="translate(${sx},468)"><rect x="-3" y="-120" width="6" height="120" class="f-mid"/><rect x="${w-31}" y="-120" width="6" height="120" class="f-mid"/><rect x="-14" y="-176" width="${w}" height="62" rx="8" fill="${c||'#1f7a4d'}" stroke="#fff" stroke-width="3"/><text x="${w/2-14}" y="-151" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#fff">${t1}</text><text x="${w/2-14}" y="-128" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="14" fill="#fff">${t2}</text></g>`;};
+  mid+=o.flight?sign(110,o.signTop,`Hà Giang ${o.km} km →`,'#0b5cab',236):sign(150,o.signTop,`Hà Giang ${o.km} km →`);
   mid+=sign(2700,'Hướng Hà Giang',`còn ${Math.round(o.km*.66)} km`);
   mid+=sign(3950,'TP Tuyên Quang','chào mừng quý khách','#2563a8');
   mid+=sign(5150,'Hà Giang','còn 50 km');
@@ -949,13 +1050,9 @@ function buildScene(o){
     <text x="0" y="-219" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="27" fill="#ffc531">CHÀO MỪNG ĐẾN</text>
     <text x="0" y="-186" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="31" fill="#fff">HÀ GIANG</text></g>`;
   s+=`<g id="sMid">${mid}</g>`;
-
-  /* road */
   s+=`<rect x="-3000" y="470" width="9000" height="92" class="f-road"/><rect x="-3000" y="470" width="9000" height="4" class="f-kerb"/>`;
   s+=`<path id="sDash" d="M-3000,516 H6000" class="s-line" stroke-width="4" stroke-dasharray="44 40" fill="none"/>`;
-  /* car */
   s+=`<g id="sCar"><g id="sCarBob"><polygon id="sBeam" points="188,-56 780,-150 780,40" fill="url(#beamG)"/>${car('s',true)}</g></g>`;
-  /* sidewalk + near layer */
   s+=`<rect x="-3000" y="560" width="9000" height="400" class="f-walk"/><rect x="-3000" y="560" width="9000" height="9" class="f-kerb"/>`;
   let near='';
   for(let tx=-800;tx<9800;tx+=110)near+=`<path d="M${tx},569 L${tx-46},720" stroke="rgba(0,0,0,.14)" stroke-width="2"/>`;
@@ -965,25 +1062,24 @@ function buildScene(o){
   const fc=['#ff4f9a','#ffffff','#ff8fc0','#e86bb0'];
   for(let fx=6700;fx<9700;fx+=rv(14,26)){const fy=rv(600,700);near+=`<path d="M${fx.toFixed(0)},${(fy+14).toFixed(0)} l0,-14" stroke="#3c8a4a" stroke-width="2"/><circle cx="${fx.toFixed(0)}" cy="${fy.toFixed(0)}" r="${rv(4,7).toFixed(1)}" fill="${fc[Math.floor(r()*4)]}"/>`;}
   s+=`<g id="sNear">${near}</g>`;
-  /* people */
   s+=`<g id="sDriver"><g class="flip">${person(DRIVER)}</g></g>`;
-  s+=`<g id="sBoy"><g class="flip">${person(Object.assign({},BOY,{scale:2.2}))}</g></g>`;
-  s+=`<g id="sGirl"><g class="flip">${person(Object.assign({},GIRL,{scale:2.2}))}</g></g>`;
+  s+=duo('sDuo',2.2);
   s+=`<g id="sBub"></g><g id="sFx"></g>`;
   scene.innerHTML=s;
   E={car:$('sCar'),bob:$('sCarBob'),beam:$('sBeam'),rd:$('sRD'),fd:$('sFD'),far:$('sFar'),mid:$('sMid'),near:$('sNear'),dash:$('sDash'),
-     stars:$('sStars'),moon:$('sMoon'),sun:$('sSun'),boy:$('sBoy'),girl:$('sGirl'),driver:$('sDriver'),bub:$('sBub'),fx:$('sFx'),paxG:$('sPaxG'),paxB:$('sPaxB')};
+     stars:$('sStars'),moon:$('sMoon'),sun:$('sSun'),driver:$('sDriver'),bub:$('sBub'),fx:$('sFx'),paxG:$('sPaxG'),paxB:$('sPaxB'),
+     duo:$('sDuo'),dGirl:$('sDuoGirl'),dBoy:$('sDuoBoy'),dCase:$('sDuoCase')};
   setSkyVars(SKY.night);
   if(G){
     G.set(E.car,{x:-560,y:548});
-    G.set(E.boy,{x:1420,y:642});G.set(E.girl,{x:1350,y:644});G.set(E.driver,{x:613,y:600,scale:.72,opacity:0,transformOrigin:'50% 100%'});
+    G.set(E.duo,{x:1400,y:642});
+    G.set(E.driver,{x:613,y:600,scale:.72,opacity:0,transformOrigin:'50% 100%'});
     G.set([E.rd,E.fd],{transformOrigin:'100% 50%',scaleX:1});
   }
-  face(E.boy,-1);face(E.girl,-1);face(E.driver,1);
+  face(E.duo,-1);face(E.driver,1);
 }
-function face(e,dir){e.querySelector('.flip').setAttribute('transform',dir<0?'scale(-1,1)':'');}
 function say(x,y,text,hold){
-  if(!G)return;
+  if(!G||!E.bub)return;
   const g=el('g',{},E.bub);
   g.innerHTML=`<path class="t" fill="#fff" stroke="#1d2160" stroke-width="3" stroke-linejoin="round"/><rect rx="18" fill="#fff" stroke="#1d2160" stroke-width="3"/><path class="c" fill="#fff"/><text font-family="Patrick Hand, cursive" font-size="27" fill="#1d2160" text-anchor="middle"></text>`;
   const t=g.querySelector('text');t.textContent=text;
@@ -997,7 +1093,7 @@ function say(x,y,text,hold){
   G.to(g,{scale:0,opacity:0,duration:.25,delay:.42+hold,ease:'power2.in',onComplete:()=>g.remove()});
 }
 function sBurst(x,y,count){
-  if(!G||reduce)return;
+  if(!G||reduce||!E.fx)return;
   const cols=['#ff4f9a','#ffffff','#ffc531','#ff8fc0','#11b3ae'];
   for(let i=0;i<count;i++){const c=cols[i%cols.length];
     const f=el('g',{},E.fx);f.innerHTML=`<circle cx="0" cy="-6" r="5" fill="${c}"/><circle cx="5.7" cy="-1.8" r="5" fill="${c}"/><circle cx="3.5" cy="4.8" r="5" fill="${c}"/><circle cx="-3.5" cy="4.8" r="5" fill="${c}"/><circle cx="-5.7" cy="-1.8" r="5" fill="${c}"/><circle r="3" fill="#ffd400"/>`;
@@ -1021,121 +1117,306 @@ function phoneLine(who,text){const d=document.createElement('div');d.className='
   if(G)G.fromTo(d,{y:10,opacity:0,scale:.9},{y:0,opacity:1,scale:1,duration:.35,ease:'back.out(2)'});}
 function phoneHide(now){clearInterval(phoneTimer);const p=$('phoneCard');if(p.hidden)return;
   if(G&&!now){$('phoneStatus').textContent='Đã kết thúc cuộc gọi';G.to(p,{x:60,opacity:0,duration:.35,delay:.5,ease:'power2.in',onComplete:()=>{p.hidden=true;}});}else p.hidden=true;}
-function routeShow(o){$('route').hidden=false;$('routeFrom').textContent=o.name;renderKm(o.km,o.km);if(G)G.fromTo('#route',{y:-12,opacity:0},{y:0,opacity:1,duration:.5});}
+function routeShow(from,to,km){$('route').hidden=false;$('routeFrom').textContent=from;$('routeTo').textContent=to;renderKm(km,km);if(G)G.fromTo('#route',{y:-12,opacity:0},{y:0,opacity:1,duration:.5});}
 
-function playIntro(){
-  const o=origin;
+function carTimeline(o){
   buildScene(o);
-  $('introHud').hidden=false;$('routeChip').textContent=`${o.name} → Hà Giang`;$('route').hidden=true;$('cap').textContent='';
+  $('introHud').hidden=false;$('routeChip').textContent=`${o.from} → Hà Giang`;$('route').hidden=true;
   const clk={m:o.dep-8},km={k:o.km};renderClock(clk.m);
-  tl=G.timeline({onComplete:()=>closeIntro(true)});
-  const on=(t,fn)=>tl.call(fn,null,t);
-  /* scene 1: waiting on the street */
-  on(.2,()=>caption(`Tối thứ 7 · ${o.name}`));
-  tl.to(clk,{m:o.dep,duration:10.8,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
-  on(.2,()=>{E.boy.classList.add('walking');E.girl.classList.add('walking');});
-  tl.to(E.boy,{x:955,duration:2.4,ease:'none'},.2);tl.to(E.girl,{x:880,duration:2.4,ease:'none'},.2);
-  on(2.6,()=>{E.boy.classList.remove('walking');E.girl.classList.remove('walking');});
-  /* the phone call */
-  on(2.9,()=>{E.girl.classList.add('calling');Snd.ring();phoneShow();});
-  on(3.9,()=>{phoneConnected();phoneLine('me','Alo anh ơi, xe sắp tới chưa ạ?');say(880,480,'Alo anh ơi, xe sắp tới chưa ạ?',1.4);});
-  on(5.5,()=>phoneLine('them','Anh rẽ vào đường mình rồi, 1 phút nữa thôi!'));
-  on(7.1,()=>{phoneLine('me','Dạ, bọn em ra đợi luôn ạ!');say(880,480,'Dạ, bọn em ra đợi luôn ạ!',1.1);});
-  on(8.6,()=>{phoneHide();E.girl.classList.remove('calling');});
+  const t=G.timeline({onComplete:()=>closeIntro(true)});
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  /* waiting on the pavement, hand in hand with the suitcase */
+  on(.2,()=>caption(o.flight?'21:52 · Sảnh đón sân bay Nội Bài':`Tối thứ 7 · ${o.name}`));
+  t.to(clk,{m:o.dep,duration:10.8,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  on(.2,()=>E.duo.classList.add('walking'));
+  t.to(E.duo,{x:920,duration:2.4,ease:'none'},.2);
+  on(2.6,()=>E.duo.classList.remove('walking'));
+  /* the phone call (girl's free hand) */
+  on(2.9,()=>{E.dGirl.classList.add('calling');Snd.ring();phoneShow();});
+  on(3.9,()=>{phoneConnected();phoneLine('me','Alo anh ơi, xe sắp tới chưa ạ?');say(884,480,'Alo anh ơi, xe sắp tới chưa ạ?',1.4);});
+  on(5.5,()=>phoneLine('them',o.flight?'Anh vào sảnh đón rồi, 1 phút nữa tới chỗ hai em!':'Anh rẽ vào đường mình rồi, 1 phút nữa thôi!'));
+  on(7.1,()=>{phoneLine('me','Dạ, bọn em ra đợi luôn ạ!');say(884,480,'Dạ, bọn em ra đợi luôn ạ!',1.1);});
+  on(8.6,()=>{phoneHide();E.dGirl.classList.remove('calling');});
   /* the car arrives */
   on(8.7,()=>E.car.classList.add('driving'));
-  tl.fromTo(E.car,{x:-560},{x:560,duration:2.4,ease:'power3.out'},8.7);
-  on(9.3,()=>say(955,480,'Xe tới kìa, nhanh lên em!',1.3));
+  t.fromTo(E.car,{x:-560},{x:560,duration:2.4,ease:'power3.out'},8.7);
+  on(9.3,()=>say(948,480,'Xe tới kìa, nhanh lên em!',1.3));
   on(10.1,()=>Snd.horn());
   on(11.0,()=>E.car.classList.remove('driving'));
-  tl.to(E.bob,{rotation:-1.1,transformOrigin:'50% 100%',duration:.18,yoyo:true,repeat:1,ease:'sine.inOut'},10.9);
+  t.to(E.bob,{rotation:-1.1,transformOrigin:'50% 100%',duration:.18,yoyo:true,repeat:1,ease:'sine.inOut'},10.9);
   /* driver steps out and opens the rear door */
-  tl.to(E.fd,{scaleX:.22,duration:.4,ease:'power2.out'},11.3);
-  tl.to(E.driver,{x:640,y:642,scale:1,opacity:1,duration:.5,ease:'power2.out'},11.6);
-  tl.to(E.fd,{scaleX:1,duration:.3,ease:'power2.in'},12.15);
+  t.to(E.fd,{scaleX:.22,duration:.4,ease:'power2.out'},11.3);
+  t.to(E.driver,{x:640,y:642,scale:1,opacity:1,duration:.5,ease:'power2.out'},11.6);
+  t.to(E.fd,{scaleX:1,duration:.3,ease:'power2.in'},12.15);
   on(12.3,()=>{Snd.thud();face(E.driver,-1);E.driver.classList.add('walking');});
-  tl.to(E.driver,{x:440,duration:1.0,ease:'none'},12.3);
+  t.to(E.driver,{x:440,duration:1.0,ease:'none'},12.3);
   on(13.3,()=>{E.driver.classList.remove('walking');face(E.driver,1);});
-  tl.to(E.rd,{scaleX:.22,duration:.45,ease:'power2.out'},13.35);
+  t.to(E.rd,{scaleX:.22,duration:.45,ease:'power2.out'},13.35);
   on(13.45,()=>{say(440,490,'Mời anh chị lên xe ạ!',1.6);E.driver.classList.add('waving');});
-  /* door is open → the couple rushes over (in front of the car, along the sidewalk) */
-  on(13.9,()=>{face(E.boy,-1);face(E.girl,-1);E.boy.classList.add('walking','fast');E.girl.classList.add('walking','fast');say(880,480,'Đợi bọn em với!',1.1);});
-  tl.to(E.girl,{x:548,duration:1.7,ease:'power1.inOut'},13.9);
-  tl.to(E.boy,{x:640,duration:1.8,ease:'power1.inOut'},13.95);
+  /* door is open → they run over together, suitcase rolling behind */
+  on(13.9,()=>{E.duo.classList.add('walking','fast');say(884,480,'Đợi bọn em với!',1.1);});
+  t.to(E.duo,{x:560,duration:1.8,ease:'power1.inOut'},13.9);
   on(14.9,()=>say(760,480,'Chạy nhanh lên anh!',.8));
-  on(15.6,()=>E.girl.classList.remove('walking','fast'));
-  on(15.75,()=>E.boy.classList.remove('walking','fast'));
-  /* girl steps up into the rear seat */
-  tl.to(E.girl,{y:618,duration:.2,ease:'power2.out'},15.8);
-  tl.to(E.girl,{x:528,y:598,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},16.0);
-  tl.to(E.paxG,{opacity:1,duration:.35},16.2);
-  /* boy follows */
-  on(16.25,()=>E.boy.classList.add('walking'));
-  tl.to(E.boy,{x:552,duration:.55,ease:'none'},16.25);
-  on(16.8,()=>E.boy.classList.remove('walking'));
-  tl.to(E.boy,{y:618,duration:.2,ease:'power2.out'},16.85);
-  tl.to(E.boy,{x:540,y:598,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},17.05);
-  tl.to(E.paxB,{opacity:1,duration:.35},17.25);
-  on(17.5,()=>say(520,410,'Yeah, lên xe rồi!',1.0));
+  on(15.7,()=>E.duo.classList.remove('walking','fast'));
+  /* driver stows the suitcase in the boot */
+  on(15.8,()=>{E.dBoy.classList.remove('pull');say(440,490,'Để em cất vali cho ạ!',1.0);});
+  t.to(E.dCase,{keyframes:[{x:120,y:-90,duration:.35,ease:'power2.out'},{x:250,y:-70,duration:.35,ease:'power2.in'}]},15.85);
+  t.to(E.dCase,{opacity:0,duration:.2},16.5);
+  on(16.55,()=>Snd.thud());
+  /* girl steps in first, then the boy */
+  on(16.6,()=>{E.dGirl.classList.remove('hold-l');E.dBoy.classList.remove('hold-r');});
+  t.to(E.dGirl,{y:-24,duration:.2,ease:'power2.out'},16.7);
+  t.to(E.dGirl,{x:4,y:-44,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},16.9);
+  t.to(E.paxG,{opacity:1,duration:.35},17.1);
+  on(17.15,()=>E.duo.classList.add('walking'));
+  t.to(E.dBoy,{x:51,duration:.5,ease:'none'},17.15);
+  on(17.65,()=>E.duo.classList.remove('walking'));
+  t.to(E.dBoy,{y:-24,duration:.2,ease:'power2.out'},17.7);
+  t.to(E.dBoy,{x:63,y:-44,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},17.9);
+  t.to(E.paxB,{opacity:1,duration:.35},18.1);
+  on(18.35,()=>say(520,410,'Yeah, lên xe rồi!',1.0));
   /* driver closes the door and gets back in */
-  tl.to(E.rd,{scaleX:1,duration:.32,ease:'power2.in'},17.75);
-  on(18.05,()=>{Snd.thud();E.driver.classList.remove('waving');E.driver.classList.add('walking');});
-  tl.to(E.driver,{x:615,duration:.8,ease:'none'},18.05);
-  on(18.85,()=>E.driver.classList.remove('walking'));
-  tl.to(E.fd,{scaleX:.22,duration:.3},18.85);
-  tl.to(E.driver,{y:598,scale:.72,opacity:0,duration:.45,ease:'power2.in'},19.1);
-  tl.to(E.fd,{scaleX:1,duration:.25},19.6);
-  on(19.85,()=>Snd.thud());
-  /* scene 2: 15 seconds, night → dawn */
-  const D0=20.2,DUR=15,ez='power1.inOut';
-  on(D0,()=>{caption(`${o.depLabel} · Lên đường!`);E.car.classList.add('driving');Snd.engineStart();routeShow(o);});
-  tl.to(E.car,{x:600,duration:1.6,ease:'power2.inOut'},D0);
-  tl.to(E.far,{x:-2600,duration:DUR,ease:ez},D0);
-  tl.to(E.mid,{x:-5600,duration:DUR,ease:ez},D0);
-  tl.to(E.near,{x:-8200,duration:DUR,ease:ez},D0);
-  tl.to(E.dash,{attr:{'stroke-dashoffset':-7000},duration:DUR,ease:ez},D0);
-  tl.to(E.bob,{y:-2,duration:.22,yoyo:true,repeat:65,ease:'sine.inOut'},D0+.4);
-  tl.to(clk,{m:28*60+30,duration:DUR,ease:ez,onUpdate:()=>renderClock(clk.m)},D0);
-  tl.to(km,{k:0,duration:DUR,ease:ez,onUpdate:()=>renderKm(km.k,o.km)},D0);
-  tl.to(intro,Object.assign(sky(SKY.pre),{duration:3.2,ease:'none'}),D0+5);
-  tl.to(intro,Object.assign(sky(SKY.dawn),{duration:3,ease:'none'}),D0+8.4);
-  tl.to(intro,Object.assign(sky(SKY.day),{duration:3,ease:'none'}),D0+11.6);
-  tl.to(E.moon,{y:'+=300',opacity:0,duration:7,ease:'power1.in'},D0+1);
-  tl.to(E.stars,{opacity:0,duration:4},D0+6);
-  tl.to(E.sun,{y:230,duration:6.8,ease:'power1.out'},D0+8.2);
-  tl.to(scene.querySelectorAll('.glow,.win'),{opacity:0,duration:2},D0+7.5);
-  tl.to(E.beam,{opacity:0,duration:2.5},D0+9);
+  t.to(E.rd,{scaleX:1,duration:.32,ease:'power2.in'},18.6);
+  on(18.9,()=>{Snd.thud();E.driver.classList.remove('waving');E.driver.classList.add('walking');});
+  t.to(E.driver,{x:615,duration:.8,ease:'none'},18.9);
+  on(19.7,()=>E.driver.classList.remove('walking'));
+  t.to(E.fd,{scaleX:.22,duration:.3},19.7);
+  t.to(E.driver,{y:598,scale:.72,opacity:0,duration:.45,ease:'power2.in'},19.95);
+  t.to(E.fd,{scaleX:1,duration:.25},20.45);
+  on(20.7,()=>Snd.thud());
+  /* 15 seconds, night → dawn */
+  const D0=21.05,DUR=15,ez='power1.inOut';
+  on(D0,()=>{caption(`${o.depLabel} · Lên đường!`);E.car.classList.add('driving');Snd.engineStart();routeShow(o.from,'Hà Giang',o.km);});
+  t.to(E.car,{x:600,duration:1.6,ease:'power2.inOut'},D0);
+  t.to(E.far,{x:-2600,duration:DUR,ease:ez},D0);
+  t.to(E.mid,{x:-5600,duration:DUR,ease:ez},D0);
+  t.to(E.near,{x:-8200,duration:DUR,ease:ez},D0);
+  t.to(E.dash,{attr:{'stroke-dashoffset':-7000},duration:DUR,ease:ez},D0);
+  t.to(E.bob,{y:-2,duration:.22,yoyo:true,repeat:65,ease:'sine.inOut'},D0+.4);
+  t.to(clk,{m:28*60+30,duration:DUR,ease:ez,onUpdate:()=>renderClock(clk.m)},D0);
+  t.to(km,{k:0,duration:DUR,ease:ez,onUpdate:()=>renderKm(km.k,o.km)},D0);
+  t.to(intro,Object.assign(sky(SKY.pre),{duration:3.2,ease:'none'}),D0+5);
+  t.to(intro,Object.assign(sky(SKY.dawn),{duration:3,ease:'none'}),D0+8.4);
+  t.to(intro,Object.assign(sky(SKY.day),{duration:3,ease:'none'}),D0+11.6);
+  t.to(E.moon,{y:'+=300',opacity:0,duration:7,ease:'power1.in'},D0+1);
+  t.to(E.stars,{opacity:0,duration:4},D0+6);
+  t.to(E.sun,{y:230,duration:6.8,ease:'power1.out'},D0+8.2);
+  t.to(scene.querySelectorAll('.glow,.win'),{opacity:0,duration:2},D0+7.5);
+  t.to(E.beam,{opacity:0,duration:2.5},D0+9);
   on(D0+2,()=>caption('Xe lướt êm trên cao tốc về phía Bắc'));
   on(D0+2.6,()=>say(560,430,'Ngủ một giấc đi em, sáng là tới!',1.8));
   on(D0+5.4,()=>caption('Qua Tuyên Quang, cả hai say giấc'));
   on(D0+6.2,()=>say(600,430,'Zzz… zzz…',1.5));
-  tl.to([E.paxG,E.paxB],{rotation:7,transformOrigin:'50% 30%',duration:.7,yoyo:true,repeat:3,ease:'sine.inOut'},D0+5.6);
+  t.to([E.paxG,E.paxB],{rotation:7,transformOrigin:'50% 30%',duration:.7,yoyo:true,repeat:3,ease:'sine.inOut'},D0+5.6);
   on(D0+9,()=>caption('Bình minh trên Quốc lộ 2'));
   on(D0+10,()=>say(560,430,'Dậy đi anh, trời sáng rồi!',1.6));
   on(D0+12.3,()=>{caption('Núi đá hiện ra rồi!');say(620,430,'Núi kìa! Đẹp quá!',1.4);});
-  /* scene 3: arrival */
+  /* arrival: out of the car, suitcase back, hand in hand again */
   const A=D0+DUR;
   on(A,()=>{E.car.classList.remove('driving');Snd.engineStop();caption('Chủ nhật 11/10 · 04:30 · Chào mừng đến Hà Giang!');});
-  tl.to(E.rd,{scaleX:.22,duration:.4,ease:'power2.out'},A+.3);
-  on(A+.55,()=>{face(E.girl,1);face(E.boy,1);});
-  tl.to(E.paxG,{opacity:0,duration:.3},A+.6);
-  tl.fromTo(E.girl,{x:585,y:594,scale:.72,opacity:0},{x:660,y:644,scale:1,opacity:1,duration:.55,ease:'back.out(1.6)',immediateRender:false},A+.6);
-  tl.to(E.paxB,{opacity:0,duration:.3},A+.9);
-  tl.fromTo(E.boy,{x:575,y:594,scale:.72,opacity:0},{x:590,y:642,scale:1,opacity:1,duration:.55,ease:'back.out(1.6)',immediateRender:false},A+.9);
-  tl.to(E.rd,{scaleX:1,duration:.3},A+1.5);
-  on(A+1.5,()=>{E.boy.classList.add('cheer','waving');E.girl.classList.add('cheer','waving');Snd.chime();sBurst(625,470,34);});
-  on(A+1.9,()=>say(660,482,'Hà Giang ơi, bọn mình tới rồi!',1.8));
-  tl.to({},{duration:.1},A+4.4);
+  t.to(E.rd,{scaleX:.22,duration:.4,ease:'power2.out'},A+.3);
+  on(A+.5,()=>{face(E.duo,1);G.set(E.duo,{x:620});G.set([E.dGirl,E.dBoy],{x:0,y:-40,scale:.78,opacity:0,transformOrigin:'50% 100%'});G.set(E.dCase,{x:0,y:0,opacity:0});});
+  t.to(E.paxG,{opacity:0,duration:.3},A+.6);
+  t.to(E.dGirl,{y:0,scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'},A+.6);
+  t.to(E.paxB,{opacity:0,duration:.3},A+.9);
+  t.to(E.dBoy,{y:0,scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'},A+.9);
+  t.to(E.rd,{scaleX:1,duration:.3},A+1.5);
+  on(A+1.4,()=>{E.dGirl.classList.add('hold-l');E.dBoy.classList.add('hold-r','pull');});
+  t.to(E.dCase,{opacity:1,duration:.4},A+1.4);
+  on(A+1.6,()=>{E.duo.classList.add('cheer');E.dGirl.classList.add('waving');Snd.chime();sBurst(625,470,34);});
+  on(A+1.9,()=>say(648,482,'Hà Giang ơi, bọn mình tới rồi!',1.8));
+  t.to({},{duration:.1},A+4.4);
+  return t;
 }
 
+/* ---------- HCM: airport → flight → Nội Bài ---------- */
+const PK=1.4/2.2;            /* pair scale in airport scenes */
+const headY=y=>y-154*PK-6;   /* bubble anchor above heads */
+function buildSGN(){
+  scene.classList.remove('night');
+  const r=rnd(5);let s=DEFS;
+  s+=`<g id="fSun" transform="translate(320,470)"><circle r="150" fill="url(#sunG)"/><circle r="56" fill="#ffb347"/></g>`;
+  let sk=skylineSvg(r,-900,3800,560,'f-far');
+  sk+=`<g transform="translate(560,560)" class="f-far"><path d="M-34,0 L-26,-300 L-6,-330 L0,-380 L6,-330 L26,-300 L34,0 Z"/></g>`;
+  s+=`<g id="fSky">${sk}</g>`;
+  s+=`<rect x="-3000" y="556" width="12000" height="400" class="f-walk"/><rect x="-3000" y="556" width="12000" height="8" class="f-kerb"/>`;
+  let w='';
+  [120,420,720].forEach(lx=>{w+=`<g><rect x="${lx-3}" y="420" width="6" height="140" class="f-mid"/><circle class="glow win" cx="${lx}" cy="418" r="60" fill="url(#glowG)" opacity="0"/><circle cx="${lx}" cy="418" r="8" fill="#ffe7a3"/></g>`;});
+  w+=terminal(1040,'SÂN BAY TÂN SƠN NHẤT','Ga quốc nội');
+  w+=tower(1420);
+  for(let mx=1500;mx<3200;mx+=160)w+=`<rect x="${mx}" y="610" width="90" height="5" fill="#ffd400" opacity=".8"/>`;
+  w+=`<g id="fPlane" transform="translate(2050,600) scale(1.5)">${plane('fP')}</g>`;
+  w+=`<g id="fStairs">${stairs(2180,600,2392,414)}</g>`;
+  w+=duo('fDuo',1.4);
+  s+=`<g id="fWorld">${w}</g><g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseSGN(){
+  setSkyVars(SKY.sunset);buildSGN();
+  const F={world:$('fWorld'),sky:$('fSky'),sun:$('fSun'),plane:$('fPlane'),door:$('fPDoor'),gear:$('fPGear'),stairs:$('fStairs'),duo:$('fDuo')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  $('introHud').hidden=false;$('routeChip').textContent='TP HCM ✈ Hà Nội';$('route').hidden=true;
+  const clk={m:18*60};renderClock(clk.m);
+  G.set(F.duo,{x:150,y:600});face(F.duo,1);
+  G.set(F.door,{scaleX:.15,transformOrigin:'0% 50%'});
+  const sx=()=>G.getProperty(F.duo,'x')+G.getProperty(F.world,'x');
+  const sy=()=>headY(G.getProperty(F.duo,'y')+G.getProperty(F.world,'y'));
+  const t=G.timeline({onComplete:phaseCruise});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:18*60+50,duration:13,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  t.to(intro,Object.assign(sky(SKY.dusk),{duration:9,ease:'none'}),.5);
+  t.to(F.sun,{y:760,duration:10,ease:'none'},0);
+  t.to(scene.querySelectorAll('.win'),{opacity:1,duration:3},3.5);
+  /* walking to the terminal */
+  on(.3,()=>{caption('Thứ 7 · 18:00 · TP Hồ Chí Minh');F.duo.classList.add('walking');});
+  t.to(F.duo,{x:1040,duration:3,ease:'none'},.3);
+  t.to(F.world,{x:-440,duration:3,ease:'power1.inOut'},.3);
+  t.to(F.sky,{x:-160,duration:3,ease:'power1.inOut'},.3);
+  on(1.0,()=>say(sx()-23,sy(),'Đi nhanh kẻo trễ chuyến bay em!',1.6));
+  on(3.3,()=>F.duo.classList.remove('walking'));
+  t.to(F.duo,{opacity:0,duration:.35},3.3);
+  on(3.5,()=>caption('Làm thủ tục ở sân bay Tân Sơn Nhất'));
+  /* out to the apron */
+  t.to(F.world,{x:-1350,duration:1.6,ease:'power2.inOut'},3.8);
+  t.to(F.sky,{x:-500,duration:1.6,ease:'power2.inOut'},3.8);
+  t.set(F.duo,{x:1650},5.3);
+  t.to(F.duo,{opacity:1,duration:.3},5.3);
+  on(5.3,()=>{F.duo.classList.add('walking');caption('Ra máy bay · chuyến SGN → HAN');});
+  t.to(F.duo,{x:2180,duration:2,ease:'none'},5.4);
+  t.to(F.world,{x:-1650,duration:2,ease:'none'},5.4);
+  on(6.4,()=>say(sx()+23,sy(),'Máy bay đây rồi, đẹp quá!',1.3));
+  /* up the stairs, suitcase bumping along */
+  t.to(F.duo,{x:2388,y:414,duration:1.6,ease:'none'},7.4);
+  t.to(F.world,{x:-1800,y:70,duration:1.6,ease:'power1.inOut'},7.4);
+  on(7.8,()=>say(sx()-23,sy(),'Lên máy bay thôi!',1.0));
+  on(9.0,()=>{F.duo.classList.remove('walking');Snd.ding();});
+  t.to(F.duo,{x:2420,opacity:0,duration:.4},9.0);
+  t.to(F.door,{scaleX:1,duration:.35},9.6);
+  t.to(F.stairs,{x:-260,opacity:0,duration:1,ease:'power2.in'},9.9);
+  t.to(F.world,{x:-1700,y:0,duration:1.2,ease:'power1.inOut'},9.9);
+  /* take-off */
+  on(10.4,()=>{caption('18:50 · Cất cánh!');Snd.roar(4.5);});
+  const P={x:2050,y:600,r:0};
+  const drawP=()=>F.plane.setAttribute('transform',`translate(${P.x.toFixed(1)},${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)}) scale(1.5)`);
+  t.to(P,{x:2550,duration:1.6,ease:'power1.in',onUpdate:drawP},10.6);
+  t.to(P,{x:3500,y:240,r:-13,duration:2.0,ease:'power1.in',onUpdate:drawP},12.2);
+  t.to(F.gear,{scaleY:0,transformOrigin:'50% 0%',duration:.5},12.8);
+  t.to(fadeEl,{opacity:1,duration:.5},13.4);
+}
+function buildCruise(){
+  scene.classList.add('night');
+  const r=rnd(9),rv=(a,b)=>a+(b-a)*r();let s=DEFS;
+  s+=`<g>${starsSvg(r,120,560)}</g>`;
+  s+=`<g transform="translate(960,110)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/><circle cx="-8" cy="-6" r="5" fill="#efe2a6"/></g>`;
+  let city='';for(let i=0;i<300;i++){city+=`<circle cx="${rv(-300,2700).toFixed(0)}" cy="${rv(648,700).toFixed(0)}" r="${rv(1,2.6).toFixed(1)}" fill="${r()<.7?'#ffd86b':'#ff9f5a'}" opacity="${rv(.4,.95).toFixed(2)}"/>`;}
+  s+=`<rect x="-3000" y="630" width="9000" height="400" fill="#0a0e2c"/><g id="fCity">${city}</g>`;
+  let cf='';for(let x=-200;x<3400;x+=rv(150,260))cf+=cloud(x,rv(470,610),rv(1.4,2.4),'#7d86c8',.35);
+  s+=`<g id="fCloudFar">${cf}</g>`;
+  s+=`<g id="fO1"><g transform="scale(.16)">${plane('',{gearUp:true})}</g></g>`;
+  s+=`<g id="fO3"><g transform="rotate(-9) scale(.12)">${plane('',{gearUp:true})}</g></g>`;
+  s+=`<g id="fMain" transform="translate(600,440)"><g id="fMainBob"><g transform="scale(.62)">${plane('fM',{gearUp:true})}</g></g></g>`;
+  s+=`<g id="fO2"><g transform="scale(-.24,.24)">${plane('',{gearUp:true})}</g></g>`;
+  let cn='';for(let x=-200;x<5800;x+=rv(280,440))cn+=cloud(x,rv(380,660),rv(2.2,3.6),'#a9b3e6',.45);
+  s+=`<g id="fCloudNear">${cn}</g><g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseCruise(){
+  setSkyVars(SKY.night);buildCruise();
+  const C={main:$('fMain'),bob:$('fMainBob'),far:$('fCloudFar'),near:$('fCloudNear'),city:$('fCity'),o1:$('fO1'),o2:$('fO2'),o3:$('fO3')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  const clk={m:18*60+52},km={k:1160};renderClock(clk.m);
+  routeShow('TP HCM','Hà Nội',1160);
+  const t=G.timeline({onComplete:phaseLanding});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:21*60+14,duration:13,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  t.to(km,{k:40,duration:13,ease:'none',onUpdate:()=>renderKm(km.k,1160)},0);
+  t.to(C.far,{x:-1800,duration:13,ease:'none'},0);
+  t.to(C.near,{x:-4200,duration:13,ease:'none'},0);
+  t.to(C.city,{x:-1200,duration:13,ease:'none'},0);
+  t.to(C.bob,{y:-6,duration:1.2,yoyo:true,repeat:9,ease:'sine.inOut'},0);
+  /* other aircraft sharing the night sky */
+  t.fromTo(C.o1,{x:1350,y:170},{x:-350,y:150,duration:10,ease:'none'},.4);
+  t.fromTo(C.o2,{x:1500,y:575},{x:-500,y:540,duration:3.4,ease:'none'},4.2);
+  t.fromTo(C.o3,{x:1300,y:480},{x:-300,y:250,duration:7,ease:'none'},6.6);
+  on(.5,()=>caption('Bay ra Hà Nội · khoảng 2 tiếng'));
+  on(2.0,()=>say(660,318,'Ui, ngoài kia cũng có máy bay kìa!',1.8));
+  on(5.0,()=>say(620,318,'Chiếc kia bay ngược chiều nè!',1.4));
+  on(7.0,()=>caption('Ngang qua bầu trời miền Trung'));
+  on(8.4,()=>say(650,318,'Hơn 2 tiếng là tới Hà Nội rồi!',1.6));
+  on(10.6,()=>{caption('Chuẩn bị hạ cánh');Snd.ding();say(620,318,'Thắt dây an toàn nhé em!',1.4);});
+  const P={y:440,r:0};
+  t.to(P,{y:480,r:4,duration:2,ease:'power1.in',onUpdate:()=>C.main.setAttribute('transform',`translate(600,${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)})`)},11);
+  t.to(fadeEl,{opacity:1,duration:.5},12.5);
+}
+function buildHAN(){
+  scene.classList.add('night');
+  const r=rnd(13);let s=DEFS;
+  s+=`<g>${starsSvg(r,90,380)}</g>`;
+  s+=`<g transform="translate(1060,100)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/></g>`;
+  s+=`<g>${skylineSvg(r,-900,2100,560,'f-far').replace(/opacity="0"/g,'')}</g>`;
+  s+=`<rect x="-3000" y="556" width="9000" height="400" class="f-walk"/><rect x="-3000" y="556" width="9000" height="8" class="f-kerb"/>`;
+  s+=terminal(1080,'SÂN BAY QUỐC TẾ NỘI BÀI','Nhà ga T1').replace(/opacity="0"/g,'');
+  s+=`<rect x="-3000" y="584" width="9000" height="52" fill="#25273a"/><path d="M-3000,610 H6000" stroke="#ffffff" stroke-width="4" stroke-dasharray="50 50"/>`;
+  let lights='';for(let lx=-40;lx<1260;lx+=60)lights+=`<circle class="${(lx/60)%2?'blink':'blink2'}" cx="${lx}" cy="586" r="4" fill="#ffd86b"/><circle class="${(lx/60)%2?'blink2':'blink'}" cx="${lx+30}" cy="634" r="4" fill="#ffd86b"/>`;
+  s+=lights;
+  s+=`<g id="fLand" transform="translate(-820,330) scale(1.5)">${plane('fL')}</g>`;
+  s+=`<g id="fStairs2">${stairs(700,600,904,414)}</g>`;
+  s+=duo('fDuo2',1.4);
+  s+=`<g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseLanding(){
+  setSkyVars(SKY.night);buildHAN();
+  const L2={plane:$('fLand'),door:$('fLDoor'),stairs:$('fStairs2'),duo:$('fDuo2')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  $('route').hidden=true;
+  const clk={m:21*60+15};renderClock(clk.m);
+  const P={x:-820,y:330,r:-7};
+  const drawP=()=>L2.plane.setAttribute('transform',`translate(${P.x.toFixed(1)},${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)}) scale(1.5)`);drawP();
+  G.set(L2.stairs,{x:-520,opacity:0});
+  G.set(L2.duo,{x:904,y:414,opacity:0});face(L2.duo,-1);
+  G.set(L2.door,{transformOrigin:'0% 50%'});
+  const sx=()=>G.getProperty(L2.duo,'x'),sy=()=>headY(G.getProperty(L2.duo,'y'));
+  const t=G.timeline({onComplete:()=>{tl=carTimeline(origin);}});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:21*60+38,duration:9.5,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  /* touchdown at Nội Bài */
+  on(.4,()=>{caption('21:30 · Hạ cánh sân bay Nội Bài');Snd.roar(3);});
+  t.to(P,{x:380,y:600,r:-3,duration:2.6,ease:'power1.out',onUpdate:drawP},.2);
+  on(2.8,()=>Snd.thud());
+  t.to(P,{r:0,duration:.3,onUpdate:drawP},2.8);
+  t.to(P,{y:593,duration:.12,yoyo:true,repeat:1,onUpdate:drawP},2.8);
+  t.to(P,{x:560,duration:1.6,ease:'power2.out',onUpdate:drawP},3.1);
+  /* stairs, door, and down they come with the suitcase */
+  t.to(L2.stairs,{x:0,opacity:1,duration:.8,ease:'power2.out'},4.7);
+  t.to(L2.door,{scaleX:.15,duration:.4},5.5);
+  on(5.6,()=>Snd.ding());
+  t.to(L2.duo,{opacity:1,duration:.3},5.9);
+  on(6.1,()=>L2.duo.classList.add('walking'));
+  t.to(L2.duo,{x:700,y:600,duration:1.5,ease:'none'},6.1);
+  on(6.5,()=>say(sx()-23,sy(),'Hà Nội ơi, bọn mình tới rồi!',1.5));
+  t.to(L2.duo,{x:360,duration:1.7,ease:'none'},7.6);
+  on(8.3,()=>caption('Xe đã đợi sẵn ở sảnh đón'));
+  on(9.3,()=>L2.duo.classList.remove('walking'));
+  t.to(fadeEl,{opacity:1,duration:.5},9.0);
+}
+
+function playIntro(){
+  if(origin.flight)phaseSGN();
+  else tl=carTimeline(origin);
+}
 function closeIntro(animated){
   if(tl){tl.kill();tl=null;}
   Snd.engineStop();phoneHide(true);
   const done=()=>{
     intro.hidden=true;$('introHud').hidden=true;$('route').hidden=true;
-    if(G)G.set(intro,{clearProps:'clipPath'});
+    if(G){G.set(intro,{clearProps:'clipPath'});G.set(fadeEl,{opacity:0});}
     document.documentElement.style.overflow='';
-    scene.innerHTML='';
+    scene.innerHTML='';scene.classList.remove('night');E={};
     jump(1);
     if(G&&!reduce)setTimeout(()=>{if(intro.hidden&&!auto)startAuto();},1600);
   };
@@ -1145,7 +1426,7 @@ function closeIntro(animated){
 function openIntro(){
   stopAuto();resetActors();
   intro.hidden=false;document.documentElement.style.overflow='hidden';
-  if(G)G.set(intro,{clearProps:'clipPath'});
+  if(G){G.set(intro,{clearProps:'clipPath'});G.set(fadeEl,{opacity:0});}
   $('introHud').hidden=true;$('route').hidden=true;$('cap').textContent='';$('phoneCard').hidden=true;
   buildScene(origin);
   chooseEl.hidden=false;
