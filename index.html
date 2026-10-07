@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Hà Giang Quest</title>
-<meta name="description" content="Bản đồ phiêu lưu tương tác cho chuyến Hà Giang 3 ngày 2 đêm: intro xe sang chạy xuyên đêm, đôi bạn mặc trang phục H'Mông đi qua 18 điểm dừng.">
+<meta name="description" content="Bản đồ phiêu lưu tương tác cho chuyến Hà Giang 3 ngày 2 đêm: xuất phát từ Hà Nội, Bắc Ninh hoặc bay từ TP Hồ Chí Minh, đôi bạn mặc trang phục H'Mông đi qua 18 điểm dừng và khám phá chi tiết từng nơi.">
 <meta name="theme-color" content="#20245e">
 <meta property="og:title" content="Hà Giang Quest">
 <meta property="og:description" content="Bản đồ phiêu lưu Hà Giang 10–13/10 cho 2 người.">
@@ -159,6 +159,17 @@ body{
 .ghost:hover{background:rgba(255,255,255,.12)}
 .ghost:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
 .btn-sm{font-size:13px;padding:8px 12px 6px;box-shadow:0 3px 0 var(--ink)}
+/* hand in hand + suitcase */
+#scene .hold-l .arm-l{animation:none!important;transform:rotate(22deg)}
+#scene .hold-r .arm-r{animation:none!important;transform:rotate(-22deg)}
+#scene .pull .arm-l{animation:none!important;transform:rotate(35deg)}
+.cw{transform-box:fill-box;transform-origin:center}
+.walking .cw{animation:spin .35s linear infinite}
+.blink{animation:blink 1s steps(1) infinite}
+.blink2{animation:blink .7s steps(1) infinite .35s}
+@keyframes blink{50%{opacity:.1}}
+#scene.night .pwin{fill:#ffe39a}
+.fade{position:absolute;inset:0;background:#05060f;opacity:0;pointer-events:none;z-index:2}
 
 /* Panel */
 .daychip{display:inline-flex;align-items:center;gap:6px;font-family:var(--font-display);font-weight:800;font-size:13px;
@@ -187,8 +198,37 @@ body{
 
 .finale{position:absolute;inset:0;display:grid;place-items:center;background:rgba(20,22,70,.55);padding:16px}
 .finale .card{max-width:420px;text-align:center;padding:24px 22px}
+
+/* Explore prompt + tour overlay */
+.explore-pop{position:absolute;top:12px;right:12px;width:min(310px,calc(100% - 24px));z-index:5;padding:14px 14px 12px}
+.explore-pop .q{font-family:var(--font-display);font-weight:800;font-size:19px;line-height:1.15;margin:4px 0 10px;text-wrap:balance}
+.explore-pop .done{font-size:12px;font-weight:700;color:var(--pink)}
+.logrow.explored .n::after{content:" ★";color:var(--pink)}
+.tour{position:fixed;inset:0;z-index:70;overflow:hidden;color:#fff;--t1:#7fd3f7;--t2:#eaf8ff;background:linear-gradient(180deg,var(--t1) 0%,var(--t2) 100%)}
+#tourScene{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}
+.tour .cap{top:clamp(70px,13vh,130px)}
+.tflash{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:6}
+.polaroid{position:absolute;right:clamp(16px,3vw,40px);top:calc(env(safe-area-inset-top,0px) + 150px);width:min(250px,calc(100% - 32px));background:#fff;padding:10px 10px 12px;border-radius:6px;box-shadow:0 18px 40px rgba(0,0,0,.45);z-index:7;color:var(--ink);transform:rotate(-4deg)}
+.polaroid.left{right:auto;left:clamp(16px,3vw,40px)}
+@media (max-width:640px){.tour-end{bottom:calc(58.4vw + 20px)}.polaroid,.polaroid.left{top:auto;bottom:calc(58.4vw + 86px);left:50%;right:auto;width:min(240px,62vw);margin-left:calc(min(240px,62vw) / -2)}}
+.polaroid .pimg{aspect-ratio:4/3;overflow:hidden;background:linear-gradient(180deg,var(--t1),var(--t2));border:1px solid #e3e3ea}
+.polaroid .pimg svg{width:100%;height:100%;display:block}
+.polaroid .pcap{font-family:var(--font-hand);font-size:21px;text-align:center;margin-top:8px;line-height:1.1}
+.tour-end{position:absolute;left:16px;right:16px;bottom:calc(env(safe-area-inset-bottom,0px) + 18px);z-index:8;display:flex;flex-wrap:wrap;gap:10px;justify-content:center;align-items:center}
+#tourScene .hold-l .arm-l{animation:none!important;transform:rotate(22deg)}
+#tourScene .hold-r .arm-r{animation:none!important;transform:rotate(-22deg)}
+.eat .arm-r{animation:eatA .45s ease-in-out infinite alternate!important}
+@keyframes eatA{from{transform:rotate(-28deg)}to{transform:rotate(-82deg)}}
+.steam{transform-box:fill-box;transform-origin:50% 100%;animation:steamA 1.8s ease-out infinite}
+@keyframes steamA{0%{transform:translateY(4px) scaleY(.8);opacity:0}30%{opacity:.9}100%{transform:translateY(-14px) scaleY(1.1);opacity:0}}
+.flame{transform-box:fill-box;transform-origin:50% 100%;animation:flick .18s ease-in-out infinite alternate}
+@keyframes flick{from{transform:scale(1,1)}to{transform:scale(.92,1.1)}}
+.glowfl{animation:glowA .5s ease-in-out infinite alternate}
+@keyframes glowA{from{opacity:.75}to{opacity:1}}
+.swing{transform-box:fill-box;transform-origin:50% 0;animation:swingA 2s ease-in-out infinite alternate}
+@keyframes swingA{from{transform:rotate(-6deg)}to{transform:rotate(6deg)}}
 @media (prefers-reduced-motion: reduce){
-  .walking *, .waving *, .cheer *, .cloud, .river-flow, .flag, .pulse, .twinkle, .driving .wheel, .ring{animation:none!important}
+  .walking *, .waving *, .cheer *, .cloud, .river-flow, .flag, .pulse, .twinkle, .driving .wheel, .ring, .blink, .blink2, .steam, .flame, .glowfl, .swing, .eat .arm-r{animation:none!important}
   .btn,.tab{transition:none}
 }
 </style>
@@ -242,11 +282,20 @@ img{max-width:100%}
           <span><i style="background:var(--orange)"></i>Thứ 3</span>
         </div>
       </div>
+      <div class="chunk explore-pop" id="explorePop" hidden>
+        <div class="eyebrow" style="color:var(--pink)">Khám phá chi tiết</div>
+        <p class="q" id="popQ">Đi thuyền trên sông Nho Quế?</p>
+        <div class="flex flex-wrap items-center gap-2">
+          <button class="btn btn-pink btn-sm" id="popGo" type="button"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 4.5v15l13-7.5z"/></svg><span id="popGoLabel">Khám phá</span></button>
+          <button class="btn btn-sm" id="popLater" type="button">Để sau</button>
+          <span class="done" id="popDone" hidden>★ Đã khám phá</span>
+        </div>
+      </div>
       <div class="finale" id="finale" hidden>
         <div class="chunk card">
           <div class="eyebrow" style="color:var(--pink)">Hoàn thành hành trình</div>
           <h2 class="display text-[34px] font-extrabold leading-none mt-1" id="finaleTitle">Về tới Hà Nội!</h2>
-          <p class="mt-3 text-[15px]">18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.</p>
+          <p class="mt-3 text-[15px]" id="finaleText">18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.</p>
           <p class="hand text-[22px] mt-2" style="color:var(--pink)">Ua tsaug! Hẹn mùa hoa sau nhé.</p>
           <button class="btn btn-pink mt-4" id="replayBtn">Đi lại từ đầu</button>
         </div>
@@ -267,6 +316,10 @@ img{max-width:100%}
           <svg viewBox="0 0 24 24" fill="none" stroke="#11b3ae" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
           <span id="tipText"></span>
         </div>
+        <button class="btn btn-pink self-start" id="exploreBtn" type="button" hidden>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z" fill="currentColor"/></svg>
+          <span id="exploreBtnLabel">Khám phá chi tiết</span>
+        </button>
       </article>
 
       <section class="chunk p-5" aria-label="Sổ hộ chiếu hành trình">
@@ -282,8 +335,25 @@ img{max-width:100%}
   <p class="mt-6 text-[13px] text-indigo-200 max-w-[70ch]">Lịch trình gợi ý cho 10–13/10/2026. Giờ giấc chỉ để tham khảo, có thể xê dịch theo thời tiết và sức khỏe. Phím ← → để đi lùi, đi tiếp.</p>
 </div>
 
+<div class="tour" id="tour" role="dialog" aria-modal="true" aria-label="Khám phá chi tiết địa điểm" hidden>
+  <svg id="tourScene" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax meet" aria-hidden="true"></svg>
+  <div class="tflash" id="tFlash"></div>
+  <div class="intro-hud">
+    <div class="flex flex-wrap gap-2"><span class="hchip" id="tPlace">Sông Nho Quế</span><span class="hchip" id="tTime">Thứ 2 · 11:00</span></div>
+    <button class="hbtn" id="tClose" type="button">Về bản đồ ✕</button>
+  </div>
+  <div class="cap" id="tcap"></div>
+  <div class="polaroid" id="polaroid" hidden><div class="pimg"></div><div class="pcap"></div></div>
+  <div class="tour-end" id="tourEnd" hidden>
+    <button class="btn btn-sm" id="tReplay" type="button">Xem lại</button>
+    <button class="btn btn-sm" id="tBack" type="button">Về bản đồ</button>
+    <button class="btn btn-pink btn-sm" id="tNext" type="button">Đi tiếp điểm sau ›</button>
+  </div>
+</div>
+
 <div class="intro" id="intro" role="dialog" aria-modal="true" aria-label="Intro: lên đường đi Hà Giang">
   <svg id="scene" viewBox="0 0 1200 700" preserveAspectRatio="xMidYMax meet" aria-hidden="true"></svg>
+  <div class="fade" id="fade"></div>
   <div class="intro-hud" id="introHud" hidden>
     <div class="flex flex-wrap gap-2">
       <span class="hchip" id="clk">Thứ 7 · 21:52</span>
@@ -299,7 +369,7 @@ img{max-width:100%}
     <div class="bar"><div class="fill" id="routeFill"></div><div class="dot" id="routeDot">
       <svg width="16" height="10" viewBox="0 0 32 18"><path d="M2,12 C2,8 4,7 8,7 L11,3 L22,3 L26,7 C29,7 31,9 31,12 L31,14 L2,14 Z" fill="#1d2160"/><circle cx="9" cy="14" r="3.4" fill="#ffc531"/><circle cx="24" cy="14" r="3.4" fill="#ffc531"/></svg>
     </div></div>
-    <div class="ends"><span id="routeFrom">Hà Nội</span><span id="routeKm">300 km nữa</span><span>Hà Giang</span></div>
+    <div class="ends"><span id="routeFrom">Hà Nội</span><span id="routeKm">300 km nữa</span><span id="routeTo">Hà Giang</span></div>
   </div>
   <div class="phonecard" id="phoneCard" hidden>
     <div class="who">
@@ -309,11 +379,11 @@ img{max-width:100%}
     <div class="lines" id="phoneLines"></div>
   </div>
   <div class="choose" id="choose">
-    <div class="choose-inner">
+    <div class="choose-inner" style="width:min(880px,100%)">
       <div class="eyebrow">Chương mở đầu · Tối thứ 7, 10/10</div>
       <h2 class="title-main mt-1">Hà Giang <span>Quest</span></h2>
       <p class="mt-3 text-[16px] text-indigo-100 mx-auto max-w-[46ch]">Chọn nơi xe đón hai bạn. Một chiếc xe sang màu đen sẽ đưa cả hai lên cao nguyên đá trong đêm.</p>
-      <div class="grid gap-4 sm:grid-cols-2 mt-6">
+      <div class="grid gap-4 sm:grid-cols-3 mt-6">
         <button class="city" type="button" data-origin="hn">
           <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,42 H116" stroke="#1d2160" stroke-width="4"/><path d="M8,42 V26 H112 V42 M8,26 L20,14 L32,26 L44,14 L56,26 L68,14 L80,26 L92,14 L104,26 L112,18 M20,14 H104" fill="none" stroke="#7a6cf0" stroke-width="3.2" stroke-linejoin="round"/><path d="M30,42 V50 M60,42 V50 M90,42 V50" stroke="#1d2160" stroke-width="4"/></svg>
           <span class="cn">Hà Nội</span><span class="cm">~300 km · khoảng 6 tiếng</span><span class="cd">Xe đón 22:00</span>
@@ -321,6 +391,10 @@ img{max-width:100%}
         <button class="city" type="button" data-origin="bn">
           <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,48 H116" stroke="#1d2160" stroke-width="4"/><rect x="40" y="32" width="40" height="16" fill="#ff4f9a" stroke="#1d2160" stroke-width="2.5"/><path d="M22,34 C34,30 40,24 60,22 C80,24 86,30 98,34 C92,32 86,32 80,32 H40 C34,32 28,32 22,34 Z" fill="#1d2160"/><path d="M34,20 C44,18 50,10 60,8 C70,10 76,18 86,20 C80,20 74,20 70,20 H50 C46,20 40,20 34,20 Z" fill="#1d2160"/><rect x="50" y="20" width="20" height="4" fill="#ffc531"/><rect x="55" y="38" width="10" height="10" fill="#1d2160"/></svg>
           <span class="cn">Bắc Ninh</span><span class="cm">~330 km · khoảng 6,5 tiếng</span><span class="cd">Xe đón 21:30</span>
+        </button>
+        <button class="city" type="button" data-origin="hcm">
+          <svg viewBox="0 0 120 52" aria-hidden="true"><path d="M4,48 H116" stroke="#1d2160" stroke-width="4"/><path d="M18,26 C18,21 24,19 32,19 L92,19 C102,19 108,22 110,26 C108,30 102,32 92,32 L32,32 C24,32 18,30 18,26 Z" fill="#fff" stroke="#1d2160" stroke-width="2.5"/><path d="M20,28 C22,31 26,32 32,32 L92,32 C100,32 106,31 109,28 Z" fill="#0b5cab"/><path d="M24,20 L14,6 L22,6 L36,19 Z" fill="#0b5cab" stroke="#1d2160" stroke-width="2"/><path d="M66,30 L50,44 L58,44 L80,30 Z" fill="#0b5cab" stroke="#1d2160" stroke-width="2"/><path d="M38,24 h40" stroke="#1d2160" stroke-width="2.4" stroke-dasharray="3 3"/></svg>
+          <span class="cn">TP Hồ Chí Minh</span><span class="cm">Bay ~2 tiếng · xe đón ở Nội Bài</span><span class="cd">Ra sân bay 18:00</span>
         </button>
       </div>
       <div class="flex flex-wrap justify-center gap-3 mt-6">
@@ -771,13 +845,13 @@ function arrive(i,animated){
     if(animated)burst(n.x,n.y-40);
     couple.classList.add('waving');clearTimeout(waveTimer);waveTimer=setTimeout(()=>couple.classList.remove('waving'),2200);
   }
-  updateControls();
+  updateControls();showExplore(i);
   if(auto)scheduleNext();
 }
-function scheduleNext(){clearTimeout(autoTimer);autoTimer=setTimeout(()=>{if(auto&&!moving)goNext();},cur===0?1400:3600);}
+function scheduleNext(){clearTimeout(autoTimer);autoTimer=setTimeout(()=>{if(auto&&!moving)goNext();},cur===0?1400:(TOURS[cur]?5600:3600));}
 function resetActors(){
   if(motion)motion.kill();motion=null;moving=false;
-  hideAllVillagers();hideBubble();$('finale').hidden=true;
+  hideAllVillagers();hideBubble();hideExplore();$('finale').hidden=true;
   couple.classList.remove('walking','waving');bus.classList.remove('driving');
 }
 function jump(i){
@@ -792,7 +866,7 @@ function setVis(e,on){if(G){G.killTweensOf(e);G.set(e,{scale:on?1:0,opacity:on?1
 function travel(i){
   if(moving)return;
   const s=STOPS[i],info=legInfo[i];
-  clearTimeout(autoTimer);hideAllVillagers();hideBubble();boat.setAttribute('opacity',0);
+  clearTimeout(autoTimer);hideAllVillagers();hideBubble();hideExplore();boat.setAttribute('opacity',0);
   moving=true;updateControls();
   if(s.night||s.dawn)setSky(null);else setSky(null);
   for(let k=i;k<STOPS.length;k++)setTrail(k,0);
@@ -818,7 +892,7 @@ function travel(i){
 function goNext(){if(moving)return;if(cur===LAST){finale();return;}travel(cur+1);}
 function goPrev(){if(moving||cur===0)return;stopAuto();jump(cur-1);}
 function finale(){
-  if(moving)return;moving=true;clearTimeout(autoTimer);updateControls();
+  if(moving)return;moving=true;clearTimeout(autoTimer);hideExplore();updateControls();
   hideAllVillagers();hideBubble();
   const a=NODES.A;placeBus(a.x+10,a.y);faceBus(-1);pop(busPop,true);
   setTimeout(()=>{pop(couplePop,false);},350);
@@ -841,30 +915,40 @@ $('nextBtn').addEventListener('click',()=>{if(cur===LAST)stopAuto();goNext();});
 $('prevBtn').addEventListener('click',goPrev);
 $('autoBtn').addEventListener('click',()=>{if(auto)stopAuto();else{ if(!$('finale').hidden){jump(0);} startAuto();}});
 $('replayBtn').addEventListener('click',()=>{jump(0);startAuto();});
-document.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea'))return;if(!$('intro').hidden)return;
+document.addEventListener('keydown',e=>{if(e.target.closest&&e.target.closest('input,textarea'))return;if(!$('intro').hidden||!$('tour').hidden)return;
   if(e.key==='ArrowRight'){e.preventDefault();stopAuto();goNext();}else if(e.key==='ArrowLeft'){e.preventDefault();goPrev();}});
 window.addEventListener('resize',()=>{const n=NODES[STOPS[cur].node];follow(n.x);});
 
 /* =====================================================================
-   INTRO: choose origin → street at night → phone call → car arrives →
+   INTRO: choose origin → (HCM: airport → flight → Nội Bài) → pickup →
    driver opens the rear door → couple boards → 15s night-to-dawn drive
    ===================================================================== */
 const ORIGINS={
-  hn:{key:'hn',name:'Hà Nội',km:300,dep:22*60,depLabel:'22:00'},
-  bn:{key:'bn',name:'Bắc Ninh',km:330,dep:21*60+30,depLabel:'21:30'}
+  hn:{key:'hn',name:'Hà Nội',km:300,dep:22*60,depLabel:'22:00',sign:'Hà Nội ~300 km',from:'Hà Nội',signTop:'HÀ NỘI'},
+  bn:{key:'bn',name:'Bắc Ninh',km:330,dep:21*60+30,depLabel:'21:30',sign:'Bắc Ninh ~330 km',from:'Bắc Ninh',signTop:'BẮC NINH'},
+  hcm:{key:'hcm',name:'TP Hồ Chí Minh',short:'TP HCM',km:280,flightKm:1160,dep:22*60,depLabel:'22:00',sign:'TP HCM ✈ Nội Bài',from:'Nội Bài',signTop:'SÂN BAY NỘI BÀI',flight:true}
 };
 let origin=ORIGINS.hn;
 function applyOrigin(o){
   origin=o;
-  NODES.HN.name=o.name;
-  $('originSign').textContent=`${o.name} ~${o.km} km`;
-  $('originLabel').textContent=o.name;
-  $('finaleTitle').textContent=`Về tới ${o.name}!`;
-  Object.assign(STOPS[0],{time:o.depLabel,title:`Xuất phát từ ${o.name}`,
-    blurb:`Xe đón hai bạn lúc ${o.depLabel} tối thứ 7, chạy xuyên đêm khoảng ${o.km} km, rạng sáng là tới Hà Giang.`});
-  STOPS[LAST].blurb=`Trả xe, ăn trưa, lên xe khoảng 12:30–13:00, về tới ${o.name} tầm 19h–20h.`;
-  rows[0].querySelector('.t').textContent=o.depLabel;rows[0].querySelector('.n').textContent=STOPS[0].title;
-  rows[LAST].querySelector('.n').textContent=STOPS[LAST].title;
+  const nm=o.short||o.name;
+  NODES.HN.name=nm;
+  $('originSign').textContent=o.sign;
+  $('originLabel').textContent=nm;
+  $('finaleTitle').textContent=`Về tới ${nm}!`;
+  $('finaleText').textContent=o.flight
+    ?'18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, rồi bay chuyến tối thứ 3 về lại TP Hồ Chí Minh.'
+    :'18 con dấu, 3 ngày 2 đêm trên cao nguyên đá, kịp về nhà tối thứ 3 khoảng 19h–20h.';
+  if(o.flight)Object.assign(STOPS[0],{time:'18:00',title:'Bay từ TP Hồ Chí Minh',
+    blurb:'Ra sân bay lúc 18:00, bay khoảng 2 tiếng, 21:30 hạ cánh Nội Bài. Xe đón ở sảnh lúc 22:00 rồi chạy xuyên đêm lên Hà Giang.',
+    tip:'Chọn chuyến hạ cánh trước 21:30 để kịp giờ xe đón. Nhớ mua thêm hành lý ký gửi cho vali.'});
+  else Object.assign(STOPS[0],{time:o.depLabel,title:`Xuất phát từ ${o.name}`,
+    blurb:`Xe đón hai bạn lúc ${o.depLabel} tối thứ 7, chạy xuyên đêm khoảng ${o.km} km, rạng sáng là tới Hà Giang.`,
+    tip:'Chốt luôn giờ về 12:30–13:00 thứ 3 để kịp về nhà tối.'});
+  STOPS[LAST].blurb=o.flight
+    ?'Trả xe, ăn trưa, lên xe khoảng 12:30–13:00 về sân bay Nội Bài (tới tầm 19h), rồi bay chuyến tối về TP HCM.'
+    :`Trả xe, ăn trưa, lên xe khoảng 12:30–13:00, về tới ${o.name} tầm 19h–20h.`;
+  rows[0].querySelector('.t').textContent=STOPS[0].time;rows[0].querySelector('.n').textContent=STOPS[0].title;
   if(cur===0||cur===LAST)updatePanel(cur,false);
 }
 
@@ -878,7 +962,12 @@ const Snd={ctx:null,master:null,on:true,engine:null,
   ring(){for(let i=0;i<3;i++){this.tone(440,i*.9,.38,'sine',.16);this.tone(480,i*.9,.38,'sine',.16);}},
   horn(){this.tone(392,0,.16,'square',.09);this.tone(494,0,.16,'square',.06);this.tone(392,.24,.28,'square',.09);this.tone(494,.24,.28,'square',.06);},
   thud(){this.tone(85,0,.16,'triangle',.45);},
+  ding(){this.tone(880,0,.45,'sine',.14);this.tone(660,.32,.7,'sine',.14);},
   chime(){[523.25,659.25,783.99,1046.5].forEach((f,i)=>this.tone(f,i*.13,.55,'triangle',.16));},
+  roar(dur){if(!this.ctx)return;try{const c=this.ctx,len=Math.floor(c.sampleRate*dur),buf=c.createBuffer(1,len,c.sampleRate),d=buf.getChannelData(0);
+    for(let i=0;i<len;i++)d[i]=Math.random()*2-1;const src=c.createBufferSource();src.buffer=buf;const f=c.createBiquadFilter();f.type='lowpass';f.frequency.value=380;
+    const g=c.createGain(),t=c.currentTime;g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.16,t+dur*.4);g.gain.linearRampToValueAtTime(0,t+dur);
+    f.frequency.linearRampToValueAtTime(1300,t+dur*.6);src.connect(f);f.connect(g);g.connect(this.master);src.start(t);src.stop(t+dur+.1);}catch(e){}},
   engineStart(){if(!this.ctx||this.engine)return;const c=this.ctx,o=c.createOscillator(),o2=c.createOscillator(),g=c.createGain(),fl=c.createBiquadFilter();
     o.type='sawtooth';o.frequency.value=46;o2.type='sine';o2.frequency.value=92;fl.type='lowpass';fl.frequency.value=300;g.gain.value=0;
     o.connect(fl);o2.connect(fl);fl.connect(g);g.connect(this.master);o.start();o2.start();
@@ -889,51 +978,121 @@ const Snd={ctx:null,master:null,on:true,engine:null,
     ['soundBtn','soundBtn2'].forEach(id=>{const b=$(id);b.textContent=v?'Âm thanh: Bật':'Âm thanh: Tắt';b.setAttribute('aria-pressed',v?'true':'false');});}
 };
 
-const intro=$('intro'),scene=$('scene'),chooseEl=$('choose');
+const intro=$('intro'),scene=$('scene'),chooseEl=$('choose'),fadeEl=$('fade');
 let tl=null,E={};
 function sky(v){const o={};for(const k in v)o['--'+k]=v[k];return o;}
 const SKY={
+  sunset:{sky1:'#ff8f6b',sky2:'#ffd89a',far:'#7c5a7a',mid:'#4a3a5a',ground:'#8a6f6a',road:'#5a4b55',walk:'#b39a8a',kerb:'#d6c2b0',line:'#ffffff'},
+  dusk:{sky1:'#3b2d7a',sky2:'#e07a8a',far:'#3a3266',mid:'#2a2650',ground:'#4a4268',road:'#3a3452',walk:'#6a5f80',kerb:'#8a80a0',line:'#d0c8e0'},
   night:{sky1:'#070b2a',sky2:'#1f2a6b',far:'#151a45',mid:'#0f1433',ground:'#1a1f45',road:'#22243a',walk:'#2c3158',kerb:'#4a4f7a',line:'#8b90c4'},
   pre:{sky1:'#2a2370',sky2:'#b0558f',far:'#3a3474',mid:'#24264e',ground:'#2e3462',road:'#33354d',walk:'#4a4c74',kerb:'#62648e',line:'#a9add6'},
   dawn:{sky1:'#f08a6a',sky2:'#ffd59a',far:'#8a7aa0',mid:'#3d5a4a',ground:'#6f9a5a',road:'#55586a',walk:'#a99c86',kerb:'#c9bea6',line:'#f4efe0'},
   day:{sky1:'#6cc8f0',sky2:'#d8f4ff',far:'#7fa9a2',mid:'#3f8a5a',ground:'#8fcb57',road:'#5d6070',walk:'#cbbfa5',kerb:'#e9e2cf',line:'#ffffff'}
 };
 function setSkyVars(v){for(const k in v)intro.style.setProperty('--'+k,v[k]);}
-
-function buildScene(o){
-  const r=rnd(o.key==='hn'?7:11),rv=(a,b)=>a+(b-a)*r();
-  let s=`<defs><linearGradient id="beamG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff7d1" stop-opacity=".7"/><stop offset="1" stop-color="#fff7d1" stop-opacity="0"/></linearGradient>
+const DEFS=`<defs><linearGradient id="beamG" x1="0" x2="1" y1="0" y2="0"><stop offset="0" stop-color="#fff7d1" stop-opacity=".7"/><stop offset="1" stop-color="#fff7d1" stop-opacity="0"/></linearGradient>
   <radialGradient id="glowG"><stop offset="0" stop-color="#ffe7a3" stop-opacity=".85"/><stop offset="1" stop-color="#ffe7a3" stop-opacity="0"/></radialGradient>
   <radialGradient id="sunG"><stop offset="0" stop-color="#fff1b0" stop-opacity=".85"/><stop offset="1" stop-color="#ffb24a" stop-opacity="0"/></radialGradient></defs>`;
-  let st='';for(let i=0;i<110;i++)st+=`<circle class="twinkle" style="animation-delay:${rv(0,2).toFixed(2)}s" cx="${rv(-900,2100).toFixed(0)}" cy="${rv(-500,400).toFixed(0)}" r="${rv(.8,2.4).toFixed(1)}" fill="#fff"/>`;
-  s+=`<g id="sStars">${st}</g>`;
+function starsSvg(r,n,yMax){const rv=(a,b)=>a+(b-a)*r();let st='';for(let i=0;i<n;i++)st+=`<circle class="twinkle" style="animation-delay:${rv(0,2).toFixed(2)}s" cx="${rv(-900,2100).toFixed(0)}" cy="${rv(-500,yMax).toFixed(0)}" r="${rv(.8,2.4).toFixed(1)}" fill="#fff"/>`;return st;}
+
+/* ---------- Props: airliner, suitcase, hand-in-hand pair ---------- */
+/* Original blue-and-white airliner (no airline name or logo), facing right, gear on y=0 */
+function plane(p,opt){
+  opt=opt||{};const id=n=>p?` id="${p}${n}"`:'';
+  const blue='#0b5cab',blue2='#083f7a',gold='#d8b25a';
+  let win='';for(let wx=-215;wx<=200;wx+=21){if(wx>196&&wx<255)continue;win+=`<rect class="pwin" x="${wx}" y="-168" width="10" height="13" rx="4.5" fill="#bfe3ff"/>`;}
+  const gear=opt.gearUp?'':`<g${id('Gear')}><path d="M232,-104 L232,-14" stroke="#5b6b7c" stroke-width="6"/><circle cx="232" cy="-11" r="11" fill="#1b1d24"/><path d="M-58,-104 L-58,-18" stroke="#5b6b7c" stroke-width="8"/><circle cx="-70" cy="-14" r="14" fill="#1b1d24"/><circle cx="-44" cy="-14" r="14" fill="#1b1d24"/><circle cx="-70" cy="-14" r="5" fill="#8d93a3"/><circle cx="-44" cy="-14" r="5" fill="#8d93a3"/></g>`;
+  return `${opt.gearUp?'':'<ellipse cx="0" cy="2" rx="250" ry="10" fill="rgba(0,0,0,.22)"/>'}
+  <path d="M-10,-142 L-125,-205 L-155,-205 L-80,-142 Z" fill="#c4d2e3"/>
+  <path d="M-232,-176 L-300,-305 L-260,-305 L-172,-182 Z" fill="${blue}" stroke="${blue2}" stroke-width="2"/>
+  <path d="M-284,-288 L-262,-288 L-246,-262 L-270,-262 Z" fill="${gold}"/>
+  <path d="M-300,-178 C-290,-196 -262,-196 -232,-196 L240,-196 C282,-196 304,-176 306,-152 C306,-128 286,-106 250,-104 L-200,-104 C-240,-104 -280,-130 -300,-178 Z" fill="#f7fafc" stroke="#9fb3c8" stroke-width="2"/>
+  <path d="M-272,-134 L250,-134 C282,-134 300,-140 305,-146 C302,-120 286,-106 250,-104 L-200,-104 C-230,-104 -256,-116 -272,-134 Z" fill="${blue}"/>
+  <path d="M-286,-145 L304,-145" stroke="${gold}" stroke-width="3"/>
+  ${win}
+  <path d="M264,-178 L288,-176 L297,-163 L268,-165 Z" fill="#14324f"/>
+  <rect x="226" y="-188" width="24" height="64" rx="8" fill="#1b2a3b"/>
+  <g${id('Door')}><rect x="226" y="-188" width="24" height="64" rx="8" fill="#eef3f9" stroke="#7d93ab" stroke-width="2"/><rect x="230" y="-176" width="16" height="12" rx="4" fill="#bfe3ff"/></g>
+  <rect x="-206" y="-186" width="20" height="58" rx="7" fill="none" stroke="#9fb3c8" stroke-width="2"/>
+  <path d="M-248,-170 L-306,-150 L-286,-146 L-224,-160 Z" fill="${blue2}"/>
+  <path d="M60,-132 L-60,-132 L-172,-80 L-126,-80 Z" fill="#dfe8f2" stroke="#9fb3c8" stroke-width="2"/>
+  <rect x="-32" y="-114" width="88" height="32" rx="16" fill="#e7eef6" stroke="#9fb3c8" stroke-width="2"/><rect x="-32" y="-114" width="20" height="32" rx="9" fill="${blue}"/><ellipse cx="55" cy="-98" rx="7" ry="14" fill="#2b3a4c"/>
+  ${gear}
+  <circle class="blink" cx="0" cy="-199" r="5" fill="#ff3b3b"/><circle class="blink2" cx="-300" cy="-304" r="4.5" fill="#ffffff"/><circle class="blink" cx="-170" cy="-80" r="4.5" fill="#3bff7a"/>`;
+}
+function suitcase(){
+  return `<rect x="-6" y="-82" width="3.5" height="32" rx="1.5" fill="#9aa0ad"/><rect x="5" y="-82" width="3.5" height="32" rx="1.5" fill="#9aa0ad"/><rect x="-9" y="-86" width="20" height="6" rx="3" fill="#1d2160"/>
+  <rect x="-18" y="-54" width="38" height="50" rx="8" fill="#ffc531" stroke="#1d2160" stroke-width="3"/>
+  <path d="M-8,-50 v42 M2,-50 v42 M12,-50 v42" stroke="#e0a400" stroke-width="2"/>
+  <circle cx="-4" cy="-36" r="6" fill="#ff4f9a"/><rect x="6" y="-25" width="10" height="7" rx="2" fill="#11b3ae"/>
+  <g class="cw"><circle cx="-10" cy="-2" r="4.5" fill="#1d2160"/><path d="M-13,-2 h6" stroke="#c8cbe8" stroke-width="1.4"/></g>
+  <g class="cw"><circle cx="12" cy="-2" r="4.5" fill="#1d2160"/><path d="M9,-2 h6" stroke="#c8cbe8" stroke-width="1.4"/></g>`;
+}
+/* boy: one hand pulls the suitcase, the other holds the girl's hand. Local frame faces right; flip for left. */
+function duo(pid,size){
+  const k=(size||2.2)/2.2;
+  return `<g id="${pid}"><g transform="scale(${k})"><g class="flip">
+    <g id="${pid}Case"><g transform="translate(-105,0) rotate(18)">${suitcase()}</g></g>
+    <g id="${pid}Boy" class="hold-r pull"><g transform="translate(-36,0)">${person(Object.assign({},BOY,{scale:2.2}))}</g></g>
+    <g id="${pid}Girl" class="hold-l"><g transform="translate(36,2)">${person(Object.assign({},GIRL,{scale:2.2}))}</g></g>
+  </g></g></g>`;
+}
+function face(e,dir){e.querySelector('.flip').setAttribute('transform',dir<0?'scale(-1,1)':'');}
+function terminal(cx,t1,t2){
+  let panes='';for(let i=0;i<12;i++)panes+=`<rect class="win" x="${-246+i*41}" y="-188" width="34" height="88" fill="#ffe7a3" opacity="0"/><rect x="${-246+i*41}" y="-188" width="34" height="88" fill="#7fd0ff" opacity=".35"/>`;
+  return `<g transform="translate(${cx},600)"><rect x="-262" y="-212" width="524" height="212" fill="#2c3e63" stroke="#1d2160" stroke-width="3"/>${panes}
+  <path d="M-292,-210 L0,-252 L292,-210 Z" fill="#e8eef6" stroke="#1d2160" stroke-width="3"/>
+  <rect x="-232" y="-310" width="464" height="46" rx="9" fill="#0b5cab" stroke="#ffffff" stroke-width="3"/>
+  <text x="0" y="-279" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="25" fill="#ffffff">${t1}</text>
+  <rect x="-70" y="-86" width="140" height="22" rx="5" fill="#ffc531" stroke="#1d2160" stroke-width="2"/>
+  <text x="0" y="-70" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="13" fill="#1d2160">${t2}</text>
+  <rect x="-44" y="-60" width="88" height="60" fill="#bfe8ff" stroke="#1d2160" stroke-width="3"/><path d="M0,-60 v60" stroke="#1d2160" stroke-width="2.5"/></g>`;
+}
+function tower(x){return `<g transform="translate(${x},600)"><rect x="-14" y="-262" width="28" height="262" fill="#d7dde8" stroke="#1d2160" stroke-width="3"/><path d="M-42,-262 L42,-262 L32,-304 L-32,-304 Z" fill="#7fd0ff" stroke="#1d2160" stroke-width="3"/><rect x="-46" y="-314" width="92" height="12" fill="#1d2160"/><circle class="blink" cx="0" cy="-326" r="5" fill="#ff3b3b"/></g>`;}
+function stairs(x0,y0,x1,y1){
+  const n=11;let st='';
+  for(let i=0;i<n;i++){const a=i/n,b=(i+1)/n,xa=x0+(x1-x0)*a,ya=y0+(y1-y0)*a,xb=x0+(x1-x0)*b,yb=y0+(y1-y0)*b;st+=`<path d="M${xa.toFixed(1)},${ya.toFixed(1)} V${yb.toFixed(1)} H${xb.toFixed(1)}" fill="none" stroke="#5b6b7c" stroke-width="4"/>`;}
+  return `<rect x="${x0-70}" y="${y0-34}" width="${x1-x0+70}" height="26" rx="6" fill="#ffc531" stroke="#1d2160" stroke-width="3"/>
+  <circle cx="${x0-40}" cy="${y0-8}" r="10" fill="#1d2160"/><circle cx="${x1-30}" cy="${y0-8}" r="10" fill="#1d2160"/>
+  <path d="M${x0-10},${y0-34} L${x1-6},${y1+10} L${x1-6},${y0-34} Z" fill="#e5e9f0" stroke="#1d2160" stroke-width="3"/>${st}
+  <path d="M${x0},${y0-62} L${x1},${y1-62}" stroke="#1d2160" stroke-width="4"/>
+  <path d="M${x0},${y0-34} v-28 M${(x0+x1)/2},${(y0+y1)/2} v-62 M${x1},${y1} v-62" stroke="#1d2160" stroke-width="3"/>`;
+}
+function cloud(x,y,s,fill,op){return `<g transform="translate(${x.toFixed(0)},${y.toFixed(0)}) scale(${s.toFixed(2)})" opacity="${op}"><path d="M-40,0 C-48,-2 -48,-18 -34,-18 C-32,-32 -10,-34 -4,-22 C2,-36 28,-34 28,-18 C44,-20 48,0 36,0 Z" fill="${fill}"/></g>`;}
+function skylineSvg(r,x0,x1,base,cls){const rv=(a,b)=>a+(b-a)*r();let s='',x=x0;
+  while(x<x1){const w=rv(50,110),h=rv(70,230);s+=`<rect x="${x.toFixed(0)}" y="${(base-h).toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" class="${cls}"/>`;
+    for(let wy=base-h+12;wy<base-14;wy+=18)for(let wx=x+8;wx<x+w-10;wx+=14)if(r()<.3)s+=`<rect class="win" x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="6" height="8" fill="#ffd86b" opacity="0"/>`;
+    x+=w+rv(0,14);}
+  return s;}
+
+/* ---------- Car scene (pickup + drive) ---------- */
+function buildScene(o){
+  const r=rnd(o.key==='bn'?11:7),rv=(a,b)=>a+(b-a)*r();
+  scene.classList.remove('night');
+  let s=DEFS;
+  s+=`<g id="sStars">${starsSvg(r,110,400)}</g>`;
   s+=`<g id="sMoon" transform="translate(980,120)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/><circle cx="-8" cy="-6" r="5" fill="#efe2a6"/><circle cx="9" cy="8" r="3.5" fill="#efe2a6"/></g>`;
   s+=`<g id="sSun" transform="translate(880,600)"><circle r="130" fill="url(#sunG)"/><circle r="48" fill="#ffc35a"/></g>`;
-
-  /* far layer: city skyline → landmark → hills → karst */
-  let far='',x=-900;
-  while(x<1450){const w=rv(46,92),h=rv(60,210);far+=`<rect x="${x.toFixed(0)}" y="${(472-h).toFixed(0)}" width="${w.toFixed(0)}" height="${h.toFixed(0)}" class="f-far"/>`;
-    for(let wy=472-h+12;wy<456;wy+=18)for(let wx=x+8;wx<x+w-10;wx+=14)if(r()<.33)far+=`<rect class="win" x="${wx.toFixed(0)}" y="${wy.toFixed(0)}" width="6" height="8" fill="#ffd86b"/>`;
-    x+=w+rv(0,10);}
-  if(o.key==='hn'){
+  let far=skylineSvg(r,-900,1450,472,'f-far').replace(/opacity="0"/g,'');
+  if(o.key==='bn'){
+    far+=`<g transform="translate(1760,472)" class="f-far"><rect x="-70" y="-40" width="140" height="40"/><path d="M-120,-36 C-90,-44 -70,-56 0,-62 C70,-56 90,-44 120,-36 C100,-40 80,-40 70,-40 H-70 C-80,-40 -100,-40 -120,-36 Z"/><rect x="-40" y="-90" width="80" height="30"/><path d="M-80,-86 C-60,-92 -40,-106 0,-110 C40,-106 60,-92 80,-86 C70,-88 60,-88 40,-88 H-40 C-60,-88 -70,-88 -80,-86 Z"/></g>`;
+  } else if(o.key==='hcm'){
+    far+=`<g transform="translate(1700,472)" class="f-far"><rect x="-240" y="-60" width="480" height="60"/><path d="M-260,-60 L0,-96 L260,-60 Z"/><rect x="300" y="-180" width="22" height="180"/><path d="M280,-180 L342,-180 L334,-206 L288,-206 Z"/></g>`;
+  } else {
     far+=`<rect x="1460" y="428" width="620" height="8" class="f-far"/>`;
     let tr='M1460,428';for(let bx=1460;bx<2080;bx+=40)tr+=` L${bx+20},398 L${bx+40},428`;
     far+=`<path d="${tr} M1480,398 H2060" fill="none" class="s-far" stroke-width="5"/>`;
     for(let px=1500;px<2080;px+=120)far+=`<rect x="${px}" y="436" width="12" height="36" class="f-far"/>`;
-  } else {
-    far+=`<g transform="translate(1760,472)" class="f-far"><rect x="-70" y="-40" width="140" height="40"/><path d="M-120,-36 C-90,-44 -70,-56 0,-62 C70,-56 90,-44 120,-36 C100,-40 80,-40 70,-40 H-70 C-80,-40 -100,-40 -120,-36 Z"/><rect x="-40" y="-90" width="80" height="30"/><path d="M-80,-86 C-60,-92 -40,-106 0,-110 C40,-106 60,-92 80,-86 C70,-88 60,-88 40,-88 H-40 C-60,-88 -70,-88 -80,-86 Z"/></g>`;
   }
   for(let hx=2120;hx<2800;hx+=rv(120,200))far+=`<path d="M${hx-130},472 C${hx-70},${rv(360,410)} ${hx+70},${rv(360,410)} ${hx+130},472 Z" class="f-far"/>`;
   for(let kx=2700;kx<4200;kx+=rv(60,120)){const w=rv(50,95),h=rv(110,250);
     far+=`<path d="M${kx-w},472 C${kx-w*.8},${472-h*.6} ${kx-w*.35},${472-h} ${kx},${472-h} C${kx+w*.35},${472-h} ${kx+w*.8},${472-h*.6} ${kx+w},472 Z" class="f-far"/>`;}
   s+=`<g id="sFar">${far}</g>`;
   s+=`<rect x="-3000" y="462" width="9000" height="12" class="f-ground"/>`;
-
-  /* mid layer (far roadside) */
   let mid='';
   [120,560,1000,1440,1880,2320].forEach(lx=>{mid+=`<g><rect x="${lx-3}" y="300" width="6" height="170" class="f-mid"/><path d="M${lx},306 q0,-16 28,-16 h8" fill="none" class="s-mid" stroke-width="5"/><circle class="glow" cx="${lx+38}" cy="300" r="74" fill="url(#glowG)"/><rect class="glow" x="${lx+29}" y="292" width="18" height="8" rx="3" fill="#ffe7a3"/></g>`;});
-  const sign=(sx,t1,t2,c)=>`<g transform="translate(${sx},468)"><rect x="-3" y="-120" width="6" height="120" class="f-mid"/><rect x="157" y="-120" width="6" height="120" class="f-mid"/><rect x="-14" y="-176" width="188" height="62" rx="8" fill="${c||'#1f7a4d'}" stroke="#fff" stroke-width="3"/><text x="80" y="-151" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#fff">${t1}</text><text x="80" y="-128" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="14" fill="#fff">${t2}</text></g>`;
-  mid+=sign(150,o.name.toUpperCase(),`Hà Giang ${o.km} km →`);
+  const sign=(sx,t1,t2,c,w)=>{w=w||188;return `<g transform="translate(${sx},468)"><rect x="-3" y="-120" width="6" height="120" class="f-mid"/><rect x="${w-31}" y="-120" width="6" height="120" class="f-mid"/><rect x="-14" y="-176" width="${w}" height="62" rx="8" fill="${c||'#1f7a4d'}" stroke="#fff" stroke-width="3"/><text x="${w/2-14}" y="-151" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="20" fill="#fff">${t1}</text><text x="${w/2-14}" y="-128" text-anchor="middle" font-family="Be Vietnam Pro, sans-serif" font-weight="700" font-size="14" fill="#fff">${t2}</text></g>`;};
+  mid+=o.flight?sign(110,o.signTop,`Hà Giang ${o.km} km →`,'#0b5cab',236):sign(150,o.signTop,`Hà Giang ${o.km} km →`);
   mid+=sign(2700,'Hướng Hà Giang',`còn ${Math.round(o.km*.66)} km`);
   mid+=sign(3950,'TP Tuyên Quang','chào mừng quý khách','#2563a8');
   mid+=sign(5150,'Hà Giang','còn 50 km');
@@ -949,13 +1108,9 @@ function buildScene(o){
     <text x="0" y="-219" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="27" fill="#ffc531">CHÀO MỪNG ĐẾN</text>
     <text x="0" y="-186" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="31" fill="#fff">HÀ GIANG</text></g>`;
   s+=`<g id="sMid">${mid}</g>`;
-
-  /* road */
   s+=`<rect x="-3000" y="470" width="9000" height="92" class="f-road"/><rect x="-3000" y="470" width="9000" height="4" class="f-kerb"/>`;
   s+=`<path id="sDash" d="M-3000,516 H6000" class="s-line" stroke-width="4" stroke-dasharray="44 40" fill="none"/>`;
-  /* car */
   s+=`<g id="sCar"><g id="sCarBob"><polygon id="sBeam" points="188,-56 780,-150 780,40" fill="url(#beamG)"/>${car('s',true)}</g></g>`;
-  /* sidewalk + near layer */
   s+=`<rect x="-3000" y="560" width="9000" height="400" class="f-walk"/><rect x="-3000" y="560" width="9000" height="9" class="f-kerb"/>`;
   let near='';
   for(let tx=-800;tx<9800;tx+=110)near+=`<path d="M${tx},569 L${tx-46},720" stroke="rgba(0,0,0,.14)" stroke-width="2"/>`;
@@ -965,25 +1120,24 @@ function buildScene(o){
   const fc=['#ff4f9a','#ffffff','#ff8fc0','#e86bb0'];
   for(let fx=6700;fx<9700;fx+=rv(14,26)){const fy=rv(600,700);near+=`<path d="M${fx.toFixed(0)},${(fy+14).toFixed(0)} l0,-14" stroke="#3c8a4a" stroke-width="2"/><circle cx="${fx.toFixed(0)}" cy="${fy.toFixed(0)}" r="${rv(4,7).toFixed(1)}" fill="${fc[Math.floor(r()*4)]}"/>`;}
   s+=`<g id="sNear">${near}</g>`;
-  /* people */
   s+=`<g id="sDriver"><g class="flip">${person(DRIVER)}</g></g>`;
-  s+=`<g id="sBoy"><g class="flip">${person(Object.assign({},BOY,{scale:2.2}))}</g></g>`;
-  s+=`<g id="sGirl"><g class="flip">${person(Object.assign({},GIRL,{scale:2.2}))}</g></g>`;
+  s+=duo('sDuo',2.2);
   s+=`<g id="sBub"></g><g id="sFx"></g>`;
   scene.innerHTML=s;
   E={car:$('sCar'),bob:$('sCarBob'),beam:$('sBeam'),rd:$('sRD'),fd:$('sFD'),far:$('sFar'),mid:$('sMid'),near:$('sNear'),dash:$('sDash'),
-     stars:$('sStars'),moon:$('sMoon'),sun:$('sSun'),boy:$('sBoy'),girl:$('sGirl'),driver:$('sDriver'),bub:$('sBub'),fx:$('sFx'),paxG:$('sPaxG'),paxB:$('sPaxB')};
+     stars:$('sStars'),moon:$('sMoon'),sun:$('sSun'),driver:$('sDriver'),bub:$('sBub'),fx:$('sFx'),paxG:$('sPaxG'),paxB:$('sPaxB'),
+     duo:$('sDuo'),dGirl:$('sDuoGirl'),dBoy:$('sDuoBoy'),dCase:$('sDuoCase')};
   setSkyVars(SKY.night);
   if(G){
     G.set(E.car,{x:-560,y:548});
-    G.set(E.boy,{x:1420,y:642});G.set(E.girl,{x:1350,y:644});G.set(E.driver,{x:613,y:600,scale:.72,opacity:0,transformOrigin:'50% 100%'});
+    G.set(E.duo,{x:1400,y:642});
+    G.set(E.driver,{x:613,y:600,scale:.72,opacity:0,transformOrigin:'50% 100%'});
     G.set([E.rd,E.fd],{transformOrigin:'100% 50%',scaleX:1});
   }
-  face(E.boy,-1);face(E.girl,-1);face(E.driver,1);
+  face(E.duo,-1);face(E.driver,1);
 }
-function face(e,dir){e.querySelector('.flip').setAttribute('transform',dir<0?'scale(-1,1)':'');}
 function say(x,y,text,hold){
-  if(!G)return;
+  if(!G||!E.bub)return;
   const g=el('g',{},E.bub);
   g.innerHTML=`<path class="t" fill="#fff" stroke="#1d2160" stroke-width="3" stroke-linejoin="round"/><rect rx="18" fill="#fff" stroke="#1d2160" stroke-width="3"/><path class="c" fill="#fff"/><text font-family="Patrick Hand, cursive" font-size="27" fill="#1d2160" text-anchor="middle"></text>`;
   const t=g.querySelector('text');t.textContent=text;
@@ -997,7 +1151,7 @@ function say(x,y,text,hold){
   G.to(g,{scale:0,opacity:0,duration:.25,delay:.42+hold,ease:'power2.in',onComplete:()=>g.remove()});
 }
 function sBurst(x,y,count){
-  if(!G||reduce)return;
+  if(!G||reduce||!E.fx)return;
   const cols=['#ff4f9a','#ffffff','#ffc531','#ff8fc0','#11b3ae'];
   for(let i=0;i<count;i++){const c=cols[i%cols.length];
     const f=el('g',{},E.fx);f.innerHTML=`<circle cx="0" cy="-6" r="5" fill="${c}"/><circle cx="5.7" cy="-1.8" r="5" fill="${c}"/><circle cx="3.5" cy="4.8" r="5" fill="${c}"/><circle cx="-3.5" cy="4.8" r="5" fill="${c}"/><circle cx="-5.7" cy="-1.8" r="5" fill="${c}"/><circle r="3" fill="#ffd400"/>`;
@@ -1021,121 +1175,306 @@ function phoneLine(who,text){const d=document.createElement('div');d.className='
   if(G)G.fromTo(d,{y:10,opacity:0,scale:.9},{y:0,opacity:1,scale:1,duration:.35,ease:'back.out(2)'});}
 function phoneHide(now){clearInterval(phoneTimer);const p=$('phoneCard');if(p.hidden)return;
   if(G&&!now){$('phoneStatus').textContent='Đã kết thúc cuộc gọi';G.to(p,{x:60,opacity:0,duration:.35,delay:.5,ease:'power2.in',onComplete:()=>{p.hidden=true;}});}else p.hidden=true;}
-function routeShow(o){$('route').hidden=false;$('routeFrom').textContent=o.name;renderKm(o.km,o.km);if(G)G.fromTo('#route',{y:-12,opacity:0},{y:0,opacity:1,duration:.5});}
+function routeShow(from,to,km){$('route').hidden=false;$('routeFrom').textContent=from;$('routeTo').textContent=to;renderKm(km,km);if(G)G.fromTo('#route',{y:-12,opacity:0},{y:0,opacity:1,duration:.5});}
 
-function playIntro(){
-  const o=origin;
+function carTimeline(o){
   buildScene(o);
-  $('introHud').hidden=false;$('routeChip').textContent=`${o.name} → Hà Giang`;$('route').hidden=true;$('cap').textContent='';
+  $('introHud').hidden=false;$('routeChip').textContent=`${o.from} → Hà Giang`;$('route').hidden=true;
   const clk={m:o.dep-8},km={k:o.km};renderClock(clk.m);
-  tl=G.timeline({onComplete:()=>closeIntro(true)});
-  const on=(t,fn)=>tl.call(fn,null,t);
-  /* scene 1: waiting on the street */
-  on(.2,()=>caption(`Tối thứ 7 · ${o.name}`));
-  tl.to(clk,{m:o.dep,duration:10.8,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
-  on(.2,()=>{E.boy.classList.add('walking');E.girl.classList.add('walking');});
-  tl.to(E.boy,{x:955,duration:2.4,ease:'none'},.2);tl.to(E.girl,{x:880,duration:2.4,ease:'none'},.2);
-  on(2.6,()=>{E.boy.classList.remove('walking');E.girl.classList.remove('walking');});
-  /* the phone call */
-  on(2.9,()=>{E.girl.classList.add('calling');Snd.ring();phoneShow();});
-  on(3.9,()=>{phoneConnected();phoneLine('me','Alo anh ơi, xe sắp tới chưa ạ?');say(880,480,'Alo anh ơi, xe sắp tới chưa ạ?',1.4);});
-  on(5.5,()=>phoneLine('them','Anh rẽ vào đường mình rồi, 1 phút nữa thôi!'));
-  on(7.1,()=>{phoneLine('me','Dạ, bọn em ra đợi luôn ạ!');say(880,480,'Dạ, bọn em ra đợi luôn ạ!',1.1);});
-  on(8.6,()=>{phoneHide();E.girl.classList.remove('calling');});
+  const t=G.timeline({onComplete:()=>closeIntro(true)});
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  /* waiting on the pavement, hand in hand with the suitcase */
+  on(.2,()=>caption(o.flight?'21:52 · Sảnh đón sân bay Nội Bài':`Tối thứ 7 · ${o.name}`));
+  t.to(clk,{m:o.dep,duration:10.8,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  on(.2,()=>E.duo.classList.add('walking'));
+  t.to(E.duo,{x:920,duration:2.4,ease:'none'},.2);
+  on(2.6,()=>E.duo.classList.remove('walking'));
+  /* the phone call (girl's free hand) */
+  on(2.9,()=>{E.dGirl.classList.add('calling');Snd.ring();phoneShow();});
+  on(3.9,()=>{phoneConnected();phoneLine('me','Alo anh ơi, xe sắp tới chưa ạ?');say(884,480,'Alo anh ơi, xe sắp tới chưa ạ?',1.4);});
+  on(5.5,()=>phoneLine('them',o.flight?'Anh vào sảnh đón rồi, 1 phút nữa tới chỗ hai em!':'Anh rẽ vào đường mình rồi, 1 phút nữa thôi!'));
+  on(7.1,()=>{phoneLine('me','Dạ, bọn em ra đợi luôn ạ!');say(884,480,'Dạ, bọn em ra đợi luôn ạ!',1.1);});
+  on(8.6,()=>{phoneHide();E.dGirl.classList.remove('calling');});
   /* the car arrives */
   on(8.7,()=>E.car.classList.add('driving'));
-  tl.fromTo(E.car,{x:-560},{x:560,duration:2.4,ease:'power3.out'},8.7);
-  on(9.3,()=>say(955,480,'Xe tới kìa, nhanh lên em!',1.3));
+  t.fromTo(E.car,{x:-560},{x:560,duration:2.4,ease:'power3.out'},8.7);
+  on(9.3,()=>say(948,480,'Xe tới kìa, nhanh lên em!',1.3));
   on(10.1,()=>Snd.horn());
   on(11.0,()=>E.car.classList.remove('driving'));
-  tl.to(E.bob,{rotation:-1.1,transformOrigin:'50% 100%',duration:.18,yoyo:true,repeat:1,ease:'sine.inOut'},10.9);
+  t.to(E.bob,{rotation:-1.1,transformOrigin:'50% 100%',duration:.18,yoyo:true,repeat:1,ease:'sine.inOut'},10.9);
   /* driver steps out and opens the rear door */
-  tl.to(E.fd,{scaleX:.22,duration:.4,ease:'power2.out'},11.3);
-  tl.to(E.driver,{x:640,y:642,scale:1,opacity:1,duration:.5,ease:'power2.out'},11.6);
-  tl.to(E.fd,{scaleX:1,duration:.3,ease:'power2.in'},12.15);
+  t.to(E.fd,{scaleX:.22,duration:.4,ease:'power2.out'},11.3);
+  t.to(E.driver,{x:640,y:642,scale:1,opacity:1,duration:.5,ease:'power2.out'},11.6);
+  t.to(E.fd,{scaleX:1,duration:.3,ease:'power2.in'},12.15);
   on(12.3,()=>{Snd.thud();face(E.driver,-1);E.driver.classList.add('walking');});
-  tl.to(E.driver,{x:440,duration:1.0,ease:'none'},12.3);
+  t.to(E.driver,{x:440,duration:1.0,ease:'none'},12.3);
   on(13.3,()=>{E.driver.classList.remove('walking');face(E.driver,1);});
-  tl.to(E.rd,{scaleX:.22,duration:.45,ease:'power2.out'},13.35);
+  t.to(E.rd,{scaleX:.22,duration:.45,ease:'power2.out'},13.35);
   on(13.45,()=>{say(440,490,'Mời anh chị lên xe ạ!',1.6);E.driver.classList.add('waving');});
-  /* door is open → the couple rushes over (in front of the car, along the sidewalk) */
-  on(13.9,()=>{face(E.boy,-1);face(E.girl,-1);E.boy.classList.add('walking','fast');E.girl.classList.add('walking','fast');say(880,480,'Đợi bọn em với!',1.1);});
-  tl.to(E.girl,{x:548,duration:1.7,ease:'power1.inOut'},13.9);
-  tl.to(E.boy,{x:640,duration:1.8,ease:'power1.inOut'},13.95);
+  /* door is open → they run over together, suitcase rolling behind */
+  on(13.9,()=>{E.duo.classList.add('walking','fast');say(884,480,'Đợi bọn em với!',1.1);});
+  t.to(E.duo,{x:560,duration:1.8,ease:'power1.inOut'},13.9);
   on(14.9,()=>say(760,480,'Chạy nhanh lên anh!',.8));
-  on(15.6,()=>E.girl.classList.remove('walking','fast'));
-  on(15.75,()=>E.boy.classList.remove('walking','fast'));
-  /* girl steps up into the rear seat */
-  tl.to(E.girl,{y:618,duration:.2,ease:'power2.out'},15.8);
-  tl.to(E.girl,{x:528,y:598,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},16.0);
-  tl.to(E.paxG,{opacity:1,duration:.35},16.2);
-  /* boy follows */
-  on(16.25,()=>E.boy.classList.add('walking'));
-  tl.to(E.boy,{x:552,duration:.55,ease:'none'},16.25);
-  on(16.8,()=>E.boy.classList.remove('walking'));
-  tl.to(E.boy,{y:618,duration:.2,ease:'power2.out'},16.85);
-  tl.to(E.boy,{x:540,y:598,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},17.05);
-  tl.to(E.paxB,{opacity:1,duration:.35},17.25);
-  on(17.5,()=>say(520,410,'Yeah, lên xe rồi!',1.0));
+  on(15.7,()=>E.duo.classList.remove('walking','fast'));
+  /* driver stows the suitcase in the boot */
+  on(15.8,()=>{E.dBoy.classList.remove('pull');say(440,490,'Để em cất vali cho ạ!',1.0);});
+  t.to(E.dCase,{keyframes:[{x:120,y:-90,duration:.35,ease:'power2.out'},{x:250,y:-70,duration:.35,ease:'power2.in'}]},15.85);
+  t.to(E.dCase,{opacity:0,duration:.2},16.5);
+  on(16.55,()=>Snd.thud());
+  /* girl steps in first, then the boy */
+  on(16.6,()=>{E.dGirl.classList.remove('hold-l');E.dBoy.classList.remove('hold-r');});
+  t.to(E.dGirl,{y:-24,duration:.2,ease:'power2.out'},16.7);
+  t.to(E.dGirl,{x:4,y:-44,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},16.9);
+  t.to(E.paxG,{opacity:1,duration:.35},17.1);
+  on(17.15,()=>E.duo.classList.add('walking'));
+  t.to(E.dBoy,{x:51,duration:.5,ease:'none'},17.15);
+  on(17.65,()=>E.duo.classList.remove('walking'));
+  t.to(E.dBoy,{y:-24,duration:.2,ease:'power2.out'},17.7);
+  t.to(E.dBoy,{x:63,y:-44,scale:.78,opacity:0,duration:.45,ease:'power2.in',transformOrigin:'50% 100%'},17.9);
+  t.to(E.paxB,{opacity:1,duration:.35},18.1);
+  on(18.35,()=>say(520,410,'Yeah, lên xe rồi!',1.0));
   /* driver closes the door and gets back in */
-  tl.to(E.rd,{scaleX:1,duration:.32,ease:'power2.in'},17.75);
-  on(18.05,()=>{Snd.thud();E.driver.classList.remove('waving');E.driver.classList.add('walking');});
-  tl.to(E.driver,{x:615,duration:.8,ease:'none'},18.05);
-  on(18.85,()=>E.driver.classList.remove('walking'));
-  tl.to(E.fd,{scaleX:.22,duration:.3},18.85);
-  tl.to(E.driver,{y:598,scale:.72,opacity:0,duration:.45,ease:'power2.in'},19.1);
-  tl.to(E.fd,{scaleX:1,duration:.25},19.6);
-  on(19.85,()=>Snd.thud());
-  /* scene 2: 15 seconds, night → dawn */
-  const D0=20.2,DUR=15,ez='power1.inOut';
-  on(D0,()=>{caption(`${o.depLabel} · Lên đường!`);E.car.classList.add('driving');Snd.engineStart();routeShow(o);});
-  tl.to(E.car,{x:600,duration:1.6,ease:'power2.inOut'},D0);
-  tl.to(E.far,{x:-2600,duration:DUR,ease:ez},D0);
-  tl.to(E.mid,{x:-5600,duration:DUR,ease:ez},D0);
-  tl.to(E.near,{x:-8200,duration:DUR,ease:ez},D0);
-  tl.to(E.dash,{attr:{'stroke-dashoffset':-7000},duration:DUR,ease:ez},D0);
-  tl.to(E.bob,{y:-2,duration:.22,yoyo:true,repeat:65,ease:'sine.inOut'},D0+.4);
-  tl.to(clk,{m:28*60+30,duration:DUR,ease:ez,onUpdate:()=>renderClock(clk.m)},D0);
-  tl.to(km,{k:0,duration:DUR,ease:ez,onUpdate:()=>renderKm(km.k,o.km)},D0);
-  tl.to(intro,Object.assign(sky(SKY.pre),{duration:3.2,ease:'none'}),D0+5);
-  tl.to(intro,Object.assign(sky(SKY.dawn),{duration:3,ease:'none'}),D0+8.4);
-  tl.to(intro,Object.assign(sky(SKY.day),{duration:3,ease:'none'}),D0+11.6);
-  tl.to(E.moon,{y:'+=300',opacity:0,duration:7,ease:'power1.in'},D0+1);
-  tl.to(E.stars,{opacity:0,duration:4},D0+6);
-  tl.to(E.sun,{y:230,duration:6.8,ease:'power1.out'},D0+8.2);
-  tl.to(scene.querySelectorAll('.glow,.win'),{opacity:0,duration:2},D0+7.5);
-  tl.to(E.beam,{opacity:0,duration:2.5},D0+9);
+  t.to(E.rd,{scaleX:1,duration:.32,ease:'power2.in'},18.6);
+  on(18.9,()=>{Snd.thud();E.driver.classList.remove('waving');E.driver.classList.add('walking');});
+  t.to(E.driver,{x:615,duration:.8,ease:'none'},18.9);
+  on(19.7,()=>E.driver.classList.remove('walking'));
+  t.to(E.fd,{scaleX:.22,duration:.3},19.7);
+  t.to(E.driver,{y:598,scale:.72,opacity:0,duration:.45,ease:'power2.in'},19.95);
+  t.to(E.fd,{scaleX:1,duration:.25},20.45);
+  on(20.7,()=>Snd.thud());
+  /* 15 seconds, night → dawn */
+  const D0=21.05,DUR=15,ez='power1.inOut';
+  on(D0,()=>{caption(`${o.depLabel} · Lên đường!`);E.car.classList.add('driving');Snd.engineStart();routeShow(o.from,'Hà Giang',o.km);});
+  t.to(E.car,{x:600,duration:1.6,ease:'power2.inOut'},D0);
+  t.to(E.far,{x:-2600,duration:DUR,ease:ez},D0);
+  t.to(E.mid,{x:-5600,duration:DUR,ease:ez},D0);
+  t.to(E.near,{x:-8200,duration:DUR,ease:ez},D0);
+  t.to(E.dash,{attr:{'stroke-dashoffset':-7000},duration:DUR,ease:ez},D0);
+  t.to(E.bob,{y:-2,duration:.22,yoyo:true,repeat:65,ease:'sine.inOut'},D0+.4);
+  t.to(clk,{m:28*60+30,duration:DUR,ease:ez,onUpdate:()=>renderClock(clk.m)},D0);
+  t.to(km,{k:0,duration:DUR,ease:ez,onUpdate:()=>renderKm(km.k,o.km)},D0);
+  t.to(intro,Object.assign(sky(SKY.pre),{duration:3.2,ease:'none'}),D0+5);
+  t.to(intro,Object.assign(sky(SKY.dawn),{duration:3,ease:'none'}),D0+8.4);
+  t.to(intro,Object.assign(sky(SKY.day),{duration:3,ease:'none'}),D0+11.6);
+  t.to(E.moon,{y:'+=300',opacity:0,duration:7,ease:'power1.in'},D0+1);
+  t.to(E.stars,{opacity:0,duration:4},D0+6);
+  t.to(E.sun,{y:230,duration:6.8,ease:'power1.out'},D0+8.2);
+  t.to(scene.querySelectorAll('.glow,.win'),{opacity:0,duration:2},D0+7.5);
+  t.to(E.beam,{opacity:0,duration:2.5},D0+9);
   on(D0+2,()=>caption('Xe lướt êm trên cao tốc về phía Bắc'));
   on(D0+2.6,()=>say(560,430,'Ngủ một giấc đi em, sáng là tới!',1.8));
   on(D0+5.4,()=>caption('Qua Tuyên Quang, cả hai say giấc'));
   on(D0+6.2,()=>say(600,430,'Zzz… zzz…',1.5));
-  tl.to([E.paxG,E.paxB],{rotation:7,transformOrigin:'50% 30%',duration:.7,yoyo:true,repeat:3,ease:'sine.inOut'},D0+5.6);
+  t.to([E.paxG,E.paxB],{rotation:7,transformOrigin:'50% 30%',duration:.7,yoyo:true,repeat:3,ease:'sine.inOut'},D0+5.6);
   on(D0+9,()=>caption('Bình minh trên Quốc lộ 2'));
   on(D0+10,()=>say(560,430,'Dậy đi anh, trời sáng rồi!',1.6));
   on(D0+12.3,()=>{caption('Núi đá hiện ra rồi!');say(620,430,'Núi kìa! Đẹp quá!',1.4);});
-  /* scene 3: arrival */
+  /* arrival: out of the car, suitcase back, hand in hand again */
   const A=D0+DUR;
   on(A,()=>{E.car.classList.remove('driving');Snd.engineStop();caption('Chủ nhật 11/10 · 04:30 · Chào mừng đến Hà Giang!');});
-  tl.to(E.rd,{scaleX:.22,duration:.4,ease:'power2.out'},A+.3);
-  on(A+.55,()=>{face(E.girl,1);face(E.boy,1);});
-  tl.to(E.paxG,{opacity:0,duration:.3},A+.6);
-  tl.fromTo(E.girl,{x:585,y:594,scale:.72,opacity:0},{x:660,y:644,scale:1,opacity:1,duration:.55,ease:'back.out(1.6)',immediateRender:false},A+.6);
-  tl.to(E.paxB,{opacity:0,duration:.3},A+.9);
-  tl.fromTo(E.boy,{x:575,y:594,scale:.72,opacity:0},{x:590,y:642,scale:1,opacity:1,duration:.55,ease:'back.out(1.6)',immediateRender:false},A+.9);
-  tl.to(E.rd,{scaleX:1,duration:.3},A+1.5);
-  on(A+1.5,()=>{E.boy.classList.add('cheer','waving');E.girl.classList.add('cheer','waving');Snd.chime();sBurst(625,470,34);});
-  on(A+1.9,()=>say(660,482,'Hà Giang ơi, bọn mình tới rồi!',1.8));
-  tl.to({},{duration:.1},A+4.4);
+  t.to(E.rd,{scaleX:.22,duration:.4,ease:'power2.out'},A+.3);
+  on(A+.5,()=>{face(E.duo,1);G.set(E.duo,{x:620});G.set([E.dGirl,E.dBoy],{x:0,y:-40,scale:.78,opacity:0,transformOrigin:'50% 100%'});G.set(E.dCase,{x:0,y:0,opacity:0});});
+  t.to(E.paxG,{opacity:0,duration:.3},A+.6);
+  t.to(E.dGirl,{y:0,scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'},A+.6);
+  t.to(E.paxB,{opacity:0,duration:.3},A+.9);
+  t.to(E.dBoy,{y:0,scale:1,opacity:1,duration:.5,ease:'back.out(1.6)'},A+.9);
+  t.to(E.rd,{scaleX:1,duration:.3},A+1.5);
+  on(A+1.4,()=>{E.dGirl.classList.add('hold-l');E.dBoy.classList.add('hold-r','pull');});
+  t.to(E.dCase,{opacity:1,duration:.4},A+1.4);
+  on(A+1.6,()=>{E.duo.classList.add('cheer');E.dGirl.classList.add('waving');Snd.chime();sBurst(625,470,34);});
+  on(A+1.9,()=>say(648,482,'Hà Giang ơi, bọn mình tới rồi!',1.8));
+  t.to({},{duration:.1},A+4.4);
+  return t;
 }
 
+/* ---------- HCM: airport → flight → Nội Bài ---------- */
+const PK=1.4/2.2;            /* pair scale in airport scenes */
+const headY=y=>y-154*PK-6;   /* bubble anchor above heads */
+function buildSGN(){
+  scene.classList.remove('night');
+  const r=rnd(5);let s=DEFS;
+  s+=`<g id="fSun" transform="translate(320,470)"><circle r="150" fill="url(#sunG)"/><circle r="56" fill="#ffb347"/></g>`;
+  let sk=skylineSvg(r,-900,3800,560,'f-far');
+  sk+=`<g transform="translate(560,560)" class="f-far"><path d="M-34,0 L-26,-300 L-6,-330 L0,-380 L6,-330 L26,-300 L34,0 Z"/></g>`;
+  s+=`<g id="fSky">${sk}</g>`;
+  s+=`<rect x="-3000" y="556" width="12000" height="400" class="f-walk"/><rect x="-3000" y="556" width="12000" height="8" class="f-kerb"/>`;
+  let w='';
+  [120,420,720].forEach(lx=>{w+=`<g><rect x="${lx-3}" y="420" width="6" height="140" class="f-mid"/><circle class="glow win" cx="${lx}" cy="418" r="60" fill="url(#glowG)" opacity="0"/><circle cx="${lx}" cy="418" r="8" fill="#ffe7a3"/></g>`;});
+  w+=terminal(1040,'SÂN BAY TÂN SƠN NHẤT','Ga quốc nội');
+  w+=tower(1420);
+  for(let mx=1500;mx<3200;mx+=160)w+=`<rect x="${mx}" y="610" width="90" height="5" fill="#ffd400" opacity=".8"/>`;
+  w+=`<g id="fPlane" transform="translate(2050,600) scale(1.5)">${plane('fP')}</g>`;
+  w+=`<g id="fStairs">${stairs(2180,600,2392,414)}</g>`;
+  w+=duo('fDuo',1.4);
+  s+=`<g id="fWorld">${w}</g><g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseSGN(){
+  setSkyVars(SKY.sunset);buildSGN();
+  const F={world:$('fWorld'),sky:$('fSky'),sun:$('fSun'),plane:$('fPlane'),door:$('fPDoor'),gear:$('fPGear'),stairs:$('fStairs'),duo:$('fDuo')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  $('introHud').hidden=false;$('routeChip').textContent='TP HCM ✈ Hà Nội';$('route').hidden=true;
+  const clk={m:18*60};renderClock(clk.m);
+  G.set(F.duo,{x:150,y:600});face(F.duo,1);
+  G.set(F.door,{scaleX:.15,transformOrigin:'0% 50%'});
+  const sx=()=>G.getProperty(F.duo,'x')+G.getProperty(F.world,'x');
+  const sy=()=>headY(G.getProperty(F.duo,'y')+G.getProperty(F.world,'y'));
+  const t=G.timeline({onComplete:phaseCruise});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:18*60+50,duration:13,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  t.to(intro,Object.assign(sky(SKY.dusk),{duration:9,ease:'none'}),.5);
+  t.to(F.sun,{y:760,duration:10,ease:'none'},0);
+  t.to(scene.querySelectorAll('.win'),{opacity:1,duration:3},3.5);
+  /* walking to the terminal */
+  on(.3,()=>{caption('Thứ 7 · 18:00 · TP Hồ Chí Minh');F.duo.classList.add('walking');});
+  t.to(F.duo,{x:1040,duration:3,ease:'none'},.3);
+  t.to(F.world,{x:-440,duration:3,ease:'power1.inOut'},.3);
+  t.to(F.sky,{x:-160,duration:3,ease:'power1.inOut'},.3);
+  on(1.0,()=>say(sx()-23,sy(),'Đi nhanh kẻo trễ chuyến bay em!',1.6));
+  on(3.3,()=>F.duo.classList.remove('walking'));
+  t.to(F.duo,{opacity:0,duration:.35},3.3);
+  on(3.5,()=>caption('Làm thủ tục ở sân bay Tân Sơn Nhất'));
+  /* out to the apron */
+  t.to(F.world,{x:-1350,duration:1.6,ease:'power2.inOut'},3.8);
+  t.to(F.sky,{x:-500,duration:1.6,ease:'power2.inOut'},3.8);
+  t.set(F.duo,{x:1650},5.3);
+  t.to(F.duo,{opacity:1,duration:.3},5.3);
+  on(5.3,()=>{F.duo.classList.add('walking');caption('Ra máy bay · chuyến SGN → HAN');});
+  t.to(F.duo,{x:2180,duration:2,ease:'none'},5.4);
+  t.to(F.world,{x:-1650,duration:2,ease:'none'},5.4);
+  on(6.4,()=>say(sx()+23,sy(),'Máy bay đây rồi, đẹp quá!',1.3));
+  /* up the stairs, suitcase bumping along */
+  t.to(F.duo,{x:2388,y:414,duration:1.6,ease:'none'},7.4);
+  t.to(F.world,{x:-1800,y:70,duration:1.6,ease:'power1.inOut'},7.4);
+  on(7.8,()=>say(sx()-23,sy(),'Lên máy bay thôi!',1.0));
+  on(9.0,()=>{F.duo.classList.remove('walking');Snd.ding();});
+  t.to(F.duo,{x:2420,opacity:0,duration:.4},9.0);
+  t.to(F.door,{scaleX:1,duration:.35},9.6);
+  t.to(F.stairs,{x:-260,opacity:0,duration:1,ease:'power2.in'},9.9);
+  t.to(F.world,{x:-1700,y:0,duration:1.2,ease:'power1.inOut'},9.9);
+  /* take-off */
+  on(10.4,()=>{caption('18:50 · Cất cánh!');Snd.roar(4.5);});
+  const P={x:2050,y:600,r:0};
+  const drawP=()=>F.plane.setAttribute('transform',`translate(${P.x.toFixed(1)},${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)}) scale(1.5)`);
+  t.to(P,{x:2550,duration:1.6,ease:'power1.in',onUpdate:drawP},10.6);
+  t.to(P,{x:3500,y:240,r:-13,duration:2.0,ease:'power1.in',onUpdate:drawP},12.2);
+  t.to(F.gear,{scaleY:0,transformOrigin:'50% 0%',duration:.5},12.8);
+  t.to(fadeEl,{opacity:1,duration:.5},13.4);
+}
+function buildCruise(){
+  scene.classList.add('night');
+  const r=rnd(9),rv=(a,b)=>a+(b-a)*r();let s=DEFS;
+  s+=`<g>${starsSvg(r,120,560)}</g>`;
+  s+=`<g transform="translate(960,110)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/><circle cx="-8" cy="-6" r="5" fill="#efe2a6"/></g>`;
+  let city='';for(let i=0;i<300;i++){city+=`<circle cx="${rv(-300,2700).toFixed(0)}" cy="${rv(648,700).toFixed(0)}" r="${rv(1,2.6).toFixed(1)}" fill="${r()<.7?'#ffd86b':'#ff9f5a'}" opacity="${rv(.4,.95).toFixed(2)}"/>`;}
+  s+=`<rect x="-3000" y="630" width="9000" height="400" fill="#0a0e2c"/><g id="fCity">${city}</g>`;
+  let cf='';for(let x=-200;x<3400;x+=rv(150,260))cf+=cloud(x,rv(470,610),rv(1.4,2.4),'#7d86c8',.35);
+  s+=`<g id="fCloudFar">${cf}</g>`;
+  s+=`<g id="fO1"><g transform="scale(.16)">${plane('',{gearUp:true})}</g></g>`;
+  s+=`<g id="fO3"><g transform="rotate(-9) scale(.12)">${plane('',{gearUp:true})}</g></g>`;
+  s+=`<g id="fMain" transform="translate(600,440)"><g id="fMainBob"><g transform="scale(.62)">${plane('fM',{gearUp:true})}</g></g></g>`;
+  s+=`<g id="fO2"><g transform="scale(-.24,.24)">${plane('',{gearUp:true})}</g></g>`;
+  let cn='';for(let x=-200;x<5800;x+=rv(280,440))cn+=cloud(x,rv(380,660),rv(2.2,3.6),'#a9b3e6',.45);
+  s+=`<g id="fCloudNear">${cn}</g><g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseCruise(){
+  setSkyVars(SKY.night);buildCruise();
+  const C={main:$('fMain'),bob:$('fMainBob'),far:$('fCloudFar'),near:$('fCloudNear'),city:$('fCity'),o1:$('fO1'),o2:$('fO2'),o3:$('fO3')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  const clk={m:18*60+52},km={k:1160};renderClock(clk.m);
+  routeShow('TP HCM','Hà Nội',1160);
+  const t=G.timeline({onComplete:phaseLanding});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:21*60+14,duration:13,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  t.to(km,{k:40,duration:13,ease:'none',onUpdate:()=>renderKm(km.k,1160)},0);
+  t.to(C.far,{x:-1800,duration:13,ease:'none'},0);
+  t.to(C.near,{x:-4200,duration:13,ease:'none'},0);
+  t.to(C.city,{x:-1200,duration:13,ease:'none'},0);
+  t.to(C.bob,{y:-6,duration:1.2,yoyo:true,repeat:9,ease:'sine.inOut'},0);
+  /* other aircraft sharing the night sky */
+  t.fromTo(C.o1,{x:1350,y:170},{x:-350,y:150,duration:10,ease:'none'},.4);
+  t.fromTo(C.o2,{x:1500,y:575},{x:-500,y:540,duration:3.4,ease:'none'},4.2);
+  t.fromTo(C.o3,{x:1300,y:480},{x:-300,y:250,duration:7,ease:'none'},6.6);
+  on(.5,()=>caption('Bay ra Hà Nội · khoảng 2 tiếng'));
+  on(2.0,()=>say(660,318,'Ui, ngoài kia cũng có máy bay kìa!',1.8));
+  on(5.0,()=>say(620,318,'Chiếc kia bay ngược chiều nè!',1.4));
+  on(7.0,()=>caption('Ngang qua bầu trời miền Trung'));
+  on(8.4,()=>say(650,318,'Hơn 2 tiếng là tới Hà Nội rồi!',1.6));
+  on(10.6,()=>{caption('Chuẩn bị hạ cánh');Snd.ding();say(620,318,'Thắt dây an toàn nhé em!',1.4);});
+  const P={y:440,r:0};
+  t.to(P,{y:480,r:4,duration:2,ease:'power1.in',onUpdate:()=>C.main.setAttribute('transform',`translate(600,${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)})`)},11);
+  t.to(fadeEl,{opacity:1,duration:.5},12.5);
+}
+function buildHAN(){
+  scene.classList.add('night');
+  const r=rnd(13);let s=DEFS;
+  s+=`<g>${starsSvg(r,90,380)}</g>`;
+  s+=`<g transform="translate(1060,100)"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="30" fill="#fff6c8"/></g>`;
+  s+=`<g>${skylineSvg(r,-900,2100,560,'f-far').replace(/opacity="0"/g,'')}</g>`;
+  s+=`<rect x="-3000" y="556" width="9000" height="400" class="f-walk"/><rect x="-3000" y="556" width="9000" height="8" class="f-kerb"/>`;
+  s+=terminal(1080,'SÂN BAY QUỐC TẾ NỘI BÀI','Nhà ga T1').replace(/opacity="0"/g,'');
+  s+=`<rect x="-3000" y="584" width="9000" height="52" fill="#25273a"/><path d="M-3000,610 H6000" stroke="#ffffff" stroke-width="4" stroke-dasharray="50 50"/>`;
+  let lights='';for(let lx=-40;lx<1260;lx+=60)lights+=`<circle class="${(lx/60)%2?'blink':'blink2'}" cx="${lx}" cy="586" r="4" fill="#ffd86b"/><circle class="${(lx/60)%2?'blink2':'blink'}" cx="${lx+30}" cy="634" r="4" fill="#ffd86b"/>`;
+  s+=lights;
+  s+=`<g id="fLand" transform="translate(-820,330) scale(1.5)">${plane('fL')}</g>`;
+  s+=`<g id="fStairs2">${stairs(700,600,904,414)}</g>`;
+  s+=duo('fDuo2',1.4);
+  s+=`<g id="sBub"></g><g id="sFx"></g>`;
+  scene.innerHTML=s;
+}
+function phaseLanding(){
+  setSkyVars(SKY.night);buildHAN();
+  const L2={plane:$('fLand'),door:$('fLDoor'),stairs:$('fStairs2'),duo:$('fDuo2')};
+  E={bub:$('sBub'),fx:$('sFx')};
+  $('route').hidden=true;
+  const clk={m:21*60+15};renderClock(clk.m);
+  const P={x:-820,y:330,r:-7};
+  const drawP=()=>L2.plane.setAttribute('transform',`translate(${P.x.toFixed(1)},${P.y.toFixed(1)}) rotate(${P.r.toFixed(2)}) scale(1.5)`);drawP();
+  G.set(L2.stairs,{x:-520,opacity:0});
+  G.set(L2.duo,{x:904,y:414,opacity:0});face(L2.duo,-1);
+  G.set(L2.door,{transformOrigin:'0% 50%'});
+  const sx=()=>G.getProperty(L2.duo,'x'),sy=()=>headY(G.getProperty(L2.duo,'y'));
+  const t=G.timeline({onComplete:()=>{tl=carTimeline(origin);}});tl=t;
+  const on=(s,fn)=>t.call(fn,null,s);
+  t.to(fadeEl,{opacity:0,duration:.6},0);
+  t.to(clk,{m:21*60+38,duration:9.5,ease:'none',onUpdate:()=>renderClock(clk.m)},0);
+  /* touchdown at Nội Bài */
+  on(.4,()=>{caption('21:30 · Hạ cánh sân bay Nội Bài');Snd.roar(3);});
+  t.to(P,{x:380,y:600,r:-3,duration:2.6,ease:'power1.out',onUpdate:drawP},.2);
+  on(2.8,()=>Snd.thud());
+  t.to(P,{r:0,duration:.3,onUpdate:drawP},2.8);
+  t.to(P,{y:593,duration:.12,yoyo:true,repeat:1,onUpdate:drawP},2.8);
+  t.to(P,{x:560,duration:1.6,ease:'power2.out',onUpdate:drawP},3.1);
+  /* stairs, door, and down they come with the suitcase */
+  t.to(L2.stairs,{x:0,opacity:1,duration:.8,ease:'power2.out'},4.7);
+  t.to(L2.door,{scaleX:.15,duration:.4},5.5);
+  on(5.6,()=>Snd.ding());
+  t.to(L2.duo,{opacity:1,duration:.3},5.9);
+  on(6.1,()=>L2.duo.classList.add('walking'));
+  t.to(L2.duo,{x:700,y:600,duration:1.5,ease:'none'},6.1);
+  on(6.5,()=>say(sx()-23,sy(),'Hà Nội ơi, bọn mình tới rồi!',1.5));
+  t.to(L2.duo,{x:360,duration:1.7,ease:'none'},7.6);
+  on(8.3,()=>caption('Xe đã đợi sẵn ở sảnh đón'));
+  on(9.3,()=>L2.duo.classList.remove('walking'));
+  t.to(fadeEl,{opacity:1,duration:.5},9.0);
+}
+
+function playIntro(){
+  if(origin.flight)phaseSGN();
+  else tl=carTimeline(origin);
+}
 function closeIntro(animated){
   if(tl){tl.kill();tl=null;}
   Snd.engineStop();phoneHide(true);
   const done=()=>{
     intro.hidden=true;$('introHud').hidden=true;$('route').hidden=true;
-    if(G)G.set(intro,{clearProps:'clipPath'});
+    if(G){G.set(intro,{clearProps:'clipPath'});G.set(fadeEl,{opacity:0});}
     document.documentElement.style.overflow='';
-    scene.innerHTML='';
+    scene.innerHTML='';scene.classList.remove('night');E={};
     jump(1);
     if(G&&!reduce)setTimeout(()=>{if(intro.hidden&&!auto)startAuto();},1600);
   };
@@ -1145,7 +1484,7 @@ function closeIntro(animated){
 function openIntro(){
   stopAuto();resetActors();
   intro.hidden=false;document.documentElement.style.overflow='hidden';
-  if(G)G.set(intro,{clearProps:'clipPath'});
+  if(G){G.set(intro,{clearProps:'clipPath'});G.set(fadeEl,{opacity:0});}
   $('introHud').hidden=true;$('route').hidden=true;$('cap').textContent='';$('phoneCard').hidden=true;
   buildScene(origin);
   chooseEl.hidden=false;
@@ -1162,6 +1501,506 @@ $('skipBtn').addEventListener('click',()=>closeIntro(true));
 ['soundBtn','soundBtn2'].forEach(id=>$(id).addEventListener('click',()=>{Snd.init();Snd.setOn(!Snd.on);}));
 $('replayIntroBtn').addEventListener('click',openIntro);
 document.addEventListener('keydown',e=>{if(!intro.hidden&&e.key==='Escape')closeIntro(false);});
+
+/* =====================================================================
+   TOURS: a short explorable mini-scene for each stop
+   ===================================================================== */
+const tourEl=$('tour'),tsv=$('tourScene');
+let T=null,tourIdx=-1;const explored=new Set();
+const TSKY={day:['#7fd3f7','#eaf8ff'],noon:['#4fb8ec','#d4f1ff'],gold:['#f59a6a','#ffe1a6'],dawn:['#f6a68a','#ffe9be'],mist:['#a8c3da','#eef3f7'],night:['#070b2a','#232c72']};
+Snd.shutter=function(){this.tone(2200,0,.03,'square',.08);this.tone(1200,.05,.05,'square',.06);};
+Snd.khen=function(){[392,440,523.25,587.33,523.25,440,392,440,523.25,392].forEach((f,i)=>{this.tone(f,i*.34,.32,'triangle',.07);this.tone(f*1.5,i*.34,.32,'sine',.025);});};
+function tSet(sky,html){const P=TSKY[sky];tourEl.style.setProperty('--t1',P[0]);tourEl.style.setProperty('--t2',P[1]);
+  tsv.innerHTML=DEFS+html+'<g id="tBub"></g><g id="tFx"></g>';E={bub:$('tBub'),fx:$('tFx')};}
+const q=s=>tsv.querySelector(s);
+const tOn=(t,fn)=>T.call(fn,null,t);
+const hy=(y,s)=>y-70*s-12;
+function tCap(text){const c=$('tcap');c.textContent=text;if(G)G.fromTo(c,{y:-16,opacity:0},{y:0,opacity:1,duration:.5,ease:'back.out(2)'});}
+function walk(sel,on,fast){const e=typeof sel==='string'?q(sel):sel;if(!e)return;e.classList.toggle('walking',!!on);e.classList.toggle('fast',!!(on&&fast));}
+function walkTo(sel,x,t0,dur,ease){tOn(t0,()=>walk(sel,true));T.to(q(sel),{x,duration:dur,ease:ease||'none'},t0);tOn(t0+dur,()=>walk(sel,false));}
+function cls(sel,add,rem){const e=q(sel);if(!e)return;(rem||'').split(' ').filter(Boolean).forEach(c=>e.classList.remove(c));(add||'').split(' ').filter(Boolean).forEach(c=>e.classList.add(c));}
+function place(sel,x,y,dir){const e=q(sel);G.set(e,{x,y});if(dir)face(e,dir);}
+
+/* --- props --- */
+function sunDisc(x,y,r,c){return `<g id="tSun" transform="translate(${x},${y})"><circle r="${r*2.6}" fill="url(#sunG)"/><circle r="${r}" fill="${c||'#ffc35a'}"/></g>`;}
+function moonDisc(x,y){return `<g transform="translate(${x},${y})"><circle r="46" fill="#fff6c8" opacity=".16"/><circle r="28" fill="#fff6c8"/><circle cx="-7" cy="-6" r="5" fill="#efe2a6"/></g>`;}
+function cloudsRow(r,n,y0,y1,fill,op){let s='';for(let i=0;i<n;i++)s+=cloud(-120+r()*1440,y0+r()*(y1-y0),.9+r()*1.2,fill||'#ffffff',op||.9);return s;}
+function karstRow(r,x0,x1,base,h0,h1,fill,stroke){let s='';for(let x=x0;x<x1;){const w=40+r()*55,h=h0+r()*(h1-h0);
+  s+=`<path d="M${(x-w).toFixed(0)},${base} C${(x-w*.8).toFixed(0)},${(base-h*.6).toFixed(0)} ${(x-w*.35).toFixed(0)},${(base-h).toFixed(0)} ${x.toFixed(0)},${(base-h).toFixed(0)} C${(x+w*.35).toFixed(0)},${(base-h).toFixed(0)} ${(x+w*.8).toFixed(0)},${(base-h*.6).toFixed(0)} ${(x+w).toFixed(0)},${base} Z" fill="${fill}"${stroke?` stroke="${stroke}" stroke-width="2"`:''}/>`;x+=w*(.9+r()*.6);}return s;}
+function ground(y,fill,edge){return `<rect x="-2400" y="${y}" width="6000" height="1400" fill="${fill}"/>${edge?`<rect x="-2400" y="${y}" width="6000" height="6" fill="${edge}"/>`:''}`;}
+function flowers(r,x0,x1,y0,y1,n){const c=['#ff4f9a','#ffffff','#ff8fc0','#e86bb0','#ffd1e6'];const pts=[];
+  for(let i=0;i<n;i++)pts.push([x0+r()*(x1-x0),y0+r()*(y1-y0),i]);pts.sort((a,b)=>a[1]-b[1]);
+  return pts.map(([x,y,i])=>{const k=.5+(y-y0)/((y1-y0)||1)*.9;return `<path d="M${x.toFixed(0)},${(y+12*k).toFixed(0)} v${(-12*k).toFixed(1)}" stroke="#3c8a4a" stroke-width="${(1.6*k).toFixed(1)}"/><circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${(3.2*k+r()*2).toFixed(1)}" fill="${c[i%5]}"/>`;}).join('');}
+function terr(x,y,w,h,n){let s=`<path d="M${x-w},${y} A${w},${h} 0 0 1 ${x+w},${y} Z" fill="#9bd062"/>`;for(let k=1;k<n;k++){const f=1-k/n;s+=`<path d="M${(x-w*f).toFixed(0)},${y} A${(w*f).toFixed(0)},${(h*f).toFixed(0)} 0 0 1 ${(x+w*f).toFixed(0)},${y}" fill="none" stroke="${k%2?'#c9ec8e':'#7fbe4e'}" stroke-width="5"/>`;}return s;}
+function tHouse(x,y,s,lit){const w=lit?'#ffd86b':'#3b2a22';return `<g transform="translate(${x},${y}) scale(${s})"><rect x="-60" y="-56" width="120" height="56" fill="#c98f5a" stroke="#1d2160" stroke-width="3"/><path d="M-60,-40 h120 M-60,-24 h120" stroke="#a8713f" stroke-width="2"/><rect x="-14" y="-36" width="28" height="36" fill="#5a3420" stroke="#1d2160" stroke-width="2.5"/><rect x="-46" y="-42" width="18" height="14" fill="${w}" stroke="#1d2160" stroke-width="2"/><rect x="28" y="-42" width="18" height="14" fill="${w}" stroke="#1d2160" stroke-width="2"/><path d="M-74,-54 L0,-96 L74,-54 Z" fill="#4a3530" stroke="#1d2160" stroke-width="3"/><path d="M-60,-62 L60,-62 M-46,-70 L46,-70 M-32,-78 L32,-78 M-18,-86 L18,-86" stroke="#6e534a" stroke-width="2.4" stroke-dasharray="6 4"/></g>`;}
+function saMoc(x,y,s){return `<g transform="translate(${x},${y}) scale(${s})"><rect x="-4" y="-30" width="8" height="30" fill="#6b4421"/><path d="M0,-200 C14,-150 30,-90 34,-28 L-34,-28 C-30,-90 -14,-150 0,-200 Z" fill="#2c6a48" stroke="#1d2160" stroke-width="2.5"/><path d="M-10,-150 l10,10 l10,-10 M-18,-100 l18,14 l18,-14 M-24,-60 l24,16 l24,-16" stroke="#1f5a3c" stroke-width="2" fill="none"/></g>`;}
+function rockSpire(x,y,w,h,c){c=c||'#9aa8a2';return `<path d="M${x-w},${y} L${x-w*.55},${y-h*.7} L${x-w*.2},${y-h} L${x+w*.25},${y-h*.82} L${x+w*.6},${y-h*.45} L${x+w},${y} Z" fill="${c}" stroke="#4d5b56" stroke-width="2.5"/><path d="M${x-w*.2},${y-h} L${x-w*.05},${y-h*.3} M${x+w*.25},${y-h*.82} L${x+w*.3},${y-h*.4}" stroke="#6d7b76" stroke-width="2"/>`;}
+function cloth(x,y,w,h,c1){let st='';const cs=['#ff4f9a','#ffc531','#11b3ae','#ffffff'];for(let k=0;k<4;k++)st+=`<rect x="${x-w/2}" y="${(y+8+k*h/4).toFixed(0)}" width="${w}" height="${(h/10).toFixed(0)}" fill="${cs[k]}"/>`;
+  return `<rect x="${x-w/2-8}" y="${y-8}" width="${w+16}" height="10" rx="4" fill="#a8743f" stroke="#1d2160" stroke-width="2.5"/><rect x="${x-w/2}" y="${y}" width="${w}" height="${h}" fill="${c1||'#1d2160'}" stroke="#1d2160" stroke-width="2.5"/>${st}`;}
+function bowl(x,y,fill,s){return `<g transform="translate(${x},${y}) scale(${s||1})"><path d="M-17,-9 h34 a17,15 0 0 1 -34,0 Z" fill="#fff" stroke="#1d2160" stroke-width="2.5"/><ellipse cx="0" cy="-9" rx="17" ry="4.5" fill="${fill}"/></g>`;}
+function cup(x,y){return `<g transform="translate(${x},${y})"><path d="M-9,-16 h18 l-2,16 h-14 Z" fill="#fff" stroke="#1d2160" stroke-width="2.2"/><path d="M9,-12 q7,0 6,6 q-1,5 -7,4" fill="none" stroke="#1d2160" stroke-width="2"/></g>`;}
+function steam(x,y,s){return `<g transform="translate(${x},${y}) scale(${s||1})"><g class="steam"><path d="M-8,0 c-7,-10 7,-16 0,-28 M7,-4 c-7,-10 7,-16 0,-28" stroke="#ffffff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".85"/></g></g>`;}
+function lantern(x,y){return `<g transform="translate(${x},${y})"><g class="swing"><path d="M0,-18 v8" stroke="#1d2160" stroke-width="2"/><ellipse cx="0" cy="4" rx="13" ry="15" fill="#e8423f" stroke="#1d2160" stroke-width="2"/><path d="M-13,4 h26" stroke="#ffc531" stroke-width="2"/><rect x="-5" y="18" width="10" height="5" fill="#ffc531"/><path d="M0,23 v10" stroke="#ffc531" stroke-width="2"/></g></g>`;}
+function fire(x,y){return `<g transform="translate(${x},${y})"><circle cy="-30" r="170" fill="url(#glowG)" class="glowfl"/><path d="M-40,0 L40,-14 M-40,-14 L40,0" stroke="#6b3f22" stroke-width="12" stroke-linecap="round"/><g class="flame"><path d="M-30,-6 C-34,-40 -10,-50 -6,-86 C6,-60 30,-50 30,-6 Z" fill="#ff8a1f"/><path d="M-16,-6 C-18,-30 -4,-38 0,-60 C8,-40 18,-32 16,-6 Z" fill="#ffc531"/></g></g>`;}
+function birds(id,x,y){return `<g id="${id}" transform="translate(${x},${y})"><path d="M-10,0 q5,-6 10,0 q5,-6 10,0 M24,-14 q4,-5 8,0 q4,-5 8,0 M-34,-20 q4,-5 8,0 q4,-5 8,0" stroke="#1d2160" stroke-width="2.4" fill="none"/></g>`;}
+function rail(x0,x1,y){let s=`<path d="M${x0},${y-46} H${x1}" stroke="#8a5a2b" stroke-width="7" stroke-linecap="round"/><path d="M${x0},${y-24} H${x1}" stroke="#8a5a2b" stroke-width="4"/>`;for(let x=x0;x<=x1;x+=60)s+=`<rect x="${x-4}" y="${y-50}" width="8" height="50" fill="#6b4421"/>`;return s;}
+function stallBox(x,y,c1,c2,vendor,goods){let st='';for(let i=0;i<6;i++)st+=`<path d="M${x-90+i*30},${y-150} h30 l-4,22 h-22 Z" fill="${i%2?c1:c2}" stroke="#1d2160" stroke-width="2"/>`;
+  return `<g><rect x="${x-86}" y="${y-150}" width="7" height="150" fill="#8a5a2b"/><rect x="${x+79}" y="${y-150}" width="7" height="150" fill="#8a5a2b"/>${st}${vendor||''}<rect x="${x-82}" y="${y-58}" width="164" height="58" fill="#c98b4a" stroke="#1d2160" stroke-width="3"/><path d="M${x-82},${y-40} h164" stroke="#8a5a2b" stroke-width="2"/>${goods||''}</g>`;}
+
+/* --- people --- */
+function pair(pid,size,girlOpt){const k=size/2.2;
+  return `<g id="${pid}"><g transform="scale(${k.toFixed(3)})"><g class="flip"><g id="${pid}B" class="hold-r"><g transform="translate(-36,0)">${person(Object.assign({},BOY,{scale:2.2}))}</g></g><g id="${pid}G" class="hold-l"><g transform="translate(36,2)">${person(Object.assign({},GIRL,{scale:2.2},girlOpt||{}))}</g></g></g></g></g>`;}
+function vill(id,i,x,y,s,dir,c){const v=VILLAGERS[i%VILLAGERS.length];return `<g id="${id}" transform="translate(${x},${y})" class="${c||''}"><g class="flip" transform="${dir<0?'scale(-1,1)':''}">${person(Object.assign({},v,{scale:s*v.scale}))}</g></g>`;}
+function bike(){return `<g><circle cx="-26" cy="-11" r="11" fill="#1d2160"/><circle cx="26" cy="-11" r="11" fill="#1d2160"/><circle cx="-26" cy="-11" r="4" fill="#c8cbe8"/><circle cx="26" cy="-11" r="4" fill="#c8cbe8"/>
+  <g transform="translate(-14,-14)">${person(Object.assign({},GIRL,{scale:.62,basket:false}))}</g><g transform="translate(6,-14)">${person(Object.assign({},BOY,{scale:.62}))}</g>
+  <path d="M-26,-11 L-6,-24 L18,-24 L26,-11 M18,-24 L24,-44 L34,-46" stroke="#1d2160" stroke-width="4" fill="none" stroke-linecap="round"/><path d="M-24,-30 C-18,-38 12,-38 18,-28 L14,-20 L-20,-20 Z" fill="#e8423f" stroke="#1d2160" stroke-width="2.5"/></g>`;}
+
+/* --- camera --- */
+function snap(cx,cy,w,h,label){
+  Snd.shutter();
+  G.fromTo('#tFlash',{opacity:.95},{opacity:0,duration:.7,ease:'power2.out'});
+  const pol=$('polaroid'),box=pol.querySelector('.pimg');box.innerHTML='';
+  const c=tsv.cloneNode(true);c.removeAttribute('id');
+  const b=c.querySelector('#tBub');if(b)b.remove();
+  c.querySelectorAll('.walking').forEach(e=>e.classList.remove('walking','fast'));
+  c.querySelectorAll('[id]').forEach(e=>{if(!e.closest('defs'))e.removeAttribute('id');});
+  c.setAttribute('viewBox',`${cx-w/2} ${cy-h/2} ${w} ${h}`);c.setAttribute('preserveAspectRatio','xMidYMid slice');
+  box.appendChild(c);pol.querySelector('.pcap').textContent=label;pol.classList.toggle('left',cx>620);pol.hidden=false;
+  G.fromTo(pol,{y:80,rotation:-14,scale:.5,opacity:0},{y:0,rotation:-4,scale:1,opacity:1,duration:.75,delay:.25,ease:'back.out(1.7)'});
+}
+
+/* --- 1 · Km0 --- */
+function sKm0(){const r=rnd(21);
+  tSet('dawn',`${sunDisc(940,300,44)}${cloudsRow(r,4,80,220,'#fff4e6',.85)}
+  ${karstRow(r,-300,1500,520,140,260,'#a58fb0')}${karstRow(r,-300,1500,565,80,170,'#6f8f78')}
+  ${ground(560,'#d8ccb4','#efe6d2')}<path d="M-2400,700 H3600" stroke="#c4b79c" stroke-width="3"/>
+  <g transform="translate(640,600)"><rect x="-80" y="-22" width="160" height="22" fill="#9aa0ad" stroke="#1d2160" stroke-width="3"/>
+   <path d="M-48,-22 L-40,-210 C-40,-226 40,-226 40,-210 L48,-22 Z" fill="#f2efe6" stroke="#1d2160" stroke-width="3"/>
+   <path d="M-40,-210 C-40,-226 40,-226 40,-210 L39,-176 L-39,-176 Z" fill="#e8423f" stroke="#1d2160" stroke-width="3"/>
+   <text y="-128" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="34" fill="#1d2160">Km</text>
+   <text y="-62" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="64" fill="#e8423f">0</text></g>
+  ${vill('tV1',1,940,646,1.9,-1)}${vill('tV2',2,1000,650,1.9,-1)}${pair('tP',1.7)}`);
+  place('#tP',-120,650,1);
+  tOn(.2,()=>tCap('Cột mốc Km0 · TP Hà Giang'));
+  walkTo('#tP',470,.2,2.6);
+  tOn(3.0,()=>say(470,hy(650,1.7),'Km0 rồi! Hành trình bắt đầu từ đây!',1.6));
+  tOn(4.0,()=>cls('#tV1','waving'));
+  tOn(4.4,()=>say(940,hy(646,1.8),'Chụp tấm ảnh đầu tiên đi hai bạn!',1.4));
+  tOn(6.2,()=>{cls('#tPG','calling');say(500,hy(650,1.7),'Cười lên nào, 1, 2, 3!',1.0);});
+  tOn(7.6,()=>snap(600,470,620,465,'Km0 Hà Giang · 11.10'));
+  tOn(8.4,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer');cls('#tV2','cheer waving');});
+  T.to({},{duration:3.4},8.4);
+}
+
+/* --- 2 · Yên Minh: chợ phiên + rừng thông --- */
+function sYenMinh(){const r=rnd(22);
+  let pines='';for(let x=-60;x<1300;x+=48+r()*40)pines+=pine(x,472+r()*14,3+r()*1.6);
+  let grove='';for(let x=820;x<1320;x+=70+r()*40)grove+=pine(x,560+r()*16,5+r()*1.4);
+  const veg=(x,y)=>`<circle cx="${x-50}" cy="${y-66}" r="10" fill="#7fbe4e" stroke="#1d2160" stroke-width="2"/><circle cx="${x-28}" cy="${y-66}" r="10" fill="#ff8a1f" stroke="#1d2160" stroke-width="2"/><circle cx="${x-6}" cy="${y-68}" r="11" fill="#e8423f" stroke="#1d2160" stroke-width="2"/><rect x="${x+14}" y="${y-78}" width="46" height="16" rx="5" fill="#a8743f" stroke="#1d2160" stroke-width="2"/>`;
+  const cake=(x,y)=>[0,1,2].map(i=>`<ellipse cx="${x-40+i*36}" cy="${y-66}" rx="15" ry="7" fill="#7a4e2c" stroke="#1d2160" stroke-width="2"/>`).join('')+steam(x,y-74,.8);
+  tSet('noon',`${cloudsRow(r,5,60,200)}${karstRow(r,-300,1500,470,120,230,'#7fa9a2')}${pines}
+  ${ground(520,'#9bcf63','#b7e07c')}<path d="M-2400,640 H3600" stroke="#d8c39a" stroke-width="56"/>
+  ${stallBox(170,590,'#ff4f9a','#ffffff',vill('tS1',0,170,590,1.5,1),veg(170,590))}
+  ${stallBox(520,590,'#11b3ae','#ffffff',vill('tS2',3,520,590,1.5,-1),cake(520,590))}
+  ${grove}${pair('tP',1.6)}
+  <g><rect x="880" y="606" width="210" height="34" rx="16" fill="#8a5a2b" stroke="#1d2160" stroke-width="3"/><ellipse cx="1090" cy="623" rx="12" ry="17" fill="#c98b4a" stroke="#1d2160" stroke-width="3"/><path d="M900,616 h150 M910,630 h120" stroke="#6b4421" stroke-width="2"/></g>`);
+  place('#tP',-140,650,1);
+  tOn(.2,()=>tCap('Chợ phiên Chủ nhật · Yên Minh'));
+  walkTo('#tP',430,.2,3);
+  tOn(1.4,()=>say(170,hy(590,1.4),'Rau rừng tươi lắm cháu ơi!',1.3));
+  tOn(3.4,()=>{cls('#tS2','waving');say(560,hy(590,1.4),'Bánh tam giác mạch nóng đây!',1.4);});
+  tOn(5.0,()=>say(430,hy(650,1.6),'Cho cháu hai cái ạ!',1.1));
+  tOn(6.6,()=>{tCap('Nghỉ trưa dưới rừng thông');cls('#tS2','','waving');});
+  walkTo('#tP',985,6.6,2.6);
+  tOn(9.3,()=>{cls('#tPB','eat','hold-r');cls('#tPG','eat','hold-l');say(1010,hy(650,1.6),'Gió thông mát ghê, bánh thơm nữa!',1.8);});
+  tOn(11.4,()=>snap(900,520,600,450,'Rừng thông Yên Minh · trưa CN'));
+  T.to({},{duration:3.4},11.6);
+}
+
+/* --- 3 · Sủng Là --- */
+function sSungLa(){const r=rnd(23);
+  tSet('day',`${cloudsRow(r,4,60,200)}${karstRow(r,-300,1500,420,140,250,'#8fb3ad')}${karstRow(r,-300,1500,470,90,170,'#4f8f68')}
+  ${ground(460,'#93cb5c')}${terr(160,472,160,70,6)}${tHouse(860,476,1.5)}
+  <path d="M-2400,520 C200,500 900,522 3600,510 L3600,1400 L-2400,1400 Z" fill="#f6c6dd"/>
+  ${flowers(r,-60,1260,505,690,560)}${vill('tK',2,830,650,2,-1)}${pair('tP',1.7)}${flowers(r,-60,1260,668,730,110)}`);
+  place('#tP',-140,656,1);
+  tOn(.2,()=>tCap('Thung lũng Sủng Là · mùa tam giác mạch'));
+  walkTo('#tP',520,.2,3);
+  tOn(1.6,()=>say(330,hy(656,1.7),'Hoa tam giác mạch xinh quá anh ơi!',1.5));
+  tOn(3.6,()=>say(560,hy(656,1.7),'Kia là Nhà của Pao trong phim đó!',1.5));
+  tOn(5.4,()=>{cls('#tK','waving');say(830,hy(650,1.4),'Tặng chị bông hoa nè!',1.3);});
+  tOn(6.9,()=>{cls('#tK','cheer','waving');cls('#tPG','calling');say(560,hy(656,1.7),'Chụp cùng em bé luôn!',1.0);});
+  tOn(8.4,()=>snap(680,520,640,480,'Sủng Là · nhà trình tường & hoa'));
+  tOn(9.2,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer');});
+  T.to({},{duration:3.4},9.2);
+}
+
+/* --- 4 · Dinh Vua Mèo --- */
+function sDinh(){const r=rnd(24);
+  let stones='';for(let y=-96;y<0;y+=18)for(let x=-296+(y%36?0:20);x<296;x+=40)stones+=`<rect x="${x}" y="${y}" width="38" height="16" rx="3" fill="none" stroke="#b9a684" stroke-width="2"/>`;
+  tSet('day',`${cloudsRow(r,4,50,180)}${karstRow(r,-300,1500,470,120,240,'#8fb3ad')}${ground(470,'#9bcf63')}
+  ${saMoc(330,520,1.8)}${saMoc(880,520,1.9)}${saMoc(990,520,1.5)}
+  <g transform="translate(600,520)">
+   <path d="M-250,-110 L-214,-176 L214,-176 L250,-110 Z" fill="#4a3530" stroke="#1d2160" stroke-width="3"/>
+   <rect x="-210" y="-232" width="420" height="60" fill="#cdb48e" stroke="#1d2160" stroke-width="3"/>
+   ${[-160,-90,-20,50,120].map(x=>`<rect x="${x}" y="-220" width="34" height="38" fill="#5a3420" stroke="#1d2160" stroke-width="2"/>`).join('')}
+   <path d="M-240,-230 L-190,-280 L190,-280 L240,-230 Z" fill="#4a3530" stroke="#1d2160" stroke-width="3"/>
+   <rect x="-300" y="-110" width="600" height="110" fill="#d9c7a6" stroke="#1d2160" stroke-width="3"/>${stones}
+   <rect x="-64" y="-160" width="128" height="160" fill="#cdb48e" stroke="#1d2160" stroke-width="3"/>
+   <path d="M-90,-158 L0,-210 L90,-158 Z" fill="#4a3530" stroke="#1d2160" stroke-width="3"/>
+   <path d="M-36,0 V-72 A36,36 0 0 1 36,-72 V0 Z" fill="#3b2a22" stroke="#1d2160" stroke-width="3"/>
+   <rect x="-56" y="-142" width="112" height="24" rx="4" fill="#e8423f" stroke="#1d2160" stroke-width="2"/>
+   <text y="-124.5" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="13" fill="#ffc531">DINH HỌ VƯƠNG</text></g>
+  <path d="M520,520 L680,520 L760,720 L440,720 Z" fill="#d8c39a"/>
+  ${vill('tG',1,800,650,2,-1)}${pair('tP',1.7)}`);
+  place('#tP',-140,656,1);
+  tOn(.2,()=>tCap('Dinh thự họ Vương · thung lũng Sà Phìn'));
+  walkTo('#tP',560,.2,3.2);
+  tOn(3.6,()=>{cls('#tG','waving');say(800,hy(650,1.9),'Dinh xây khoảng năm 1919–1928 đó!',1.6);});
+  tOn(5.6,()=>say(800,hy(650,1.9),'Kiến trúc pha H’Mông, Hán và Pháp.',1.6));
+  tOn(7.4,()=>{cls('#tG','','waving');cls('#tPG','calling');say(560,hy(656,1.7),'Chụp ở cổng dinh đã!',1.0);});
+  tOn(8.8,()=>snap(600,440,640,480,'Dinh Vua Mèo · Sà Phìn'));
+  tOn(9.6,()=>cls('#tPG','','calling'));
+  tOn(10.4,()=>{tCap('Vào thăm bên trong dinh');walk('#tP',true);});
+  T.to(q('#tP'),{x:600,y:528,scale:.6,opacity:0,transformOrigin:'50% 100%',duration:1.6,ease:'power1.in'},10.4);
+  T.to({},{duration:1.6},12);
+}
+
+/* --- 5 · Cột cờ Lũng Cú --- */
+function sLungCu(){const r=rnd(25);
+  let steps='';for(let i=0;i<14;i++){const a=i/14,b=(i+1)/14,xa=280+340*a,ya=670-290*a,xb=280+340*b,yb=670-290*b;steps+=`<path d="M${xa.toFixed(0)},${ya.toFixed(0)} V${yb.toFixed(0)} H${xb.toFixed(0)}" fill="none" stroke="#b9b2a0" stroke-width="4"/>`;}
+  tSet('gold',`${sunDisc(250,250,50,'#ffb347')}${cloudsRow(r,4,60,220,'#fff1e0',.85)}${karstRow(r,-300,1500,580,100,220,'#b48aa0')}
+  <path d="M-2400,700 L120,700 C260,560 520,380 640,372 L1100,372 C1220,380 1400,520 3600,600 L3600,1400 L-2400,1400 Z" fill="#7fbf5a" stroke="#4f8f3a" stroke-width="3"/>
+  <path d="M250,700 L606,374 L700,374 L700,388 L620,388 L276,712 Z" fill="#e3ddcf" stroke="#1d2160" stroke-width="2.5"/>${steps}
+  <rect x="600" y="368" width="440" height="14" fill="#e3ddcf" stroke="#1d2160" stroke-width="2.5"/>
+  <g transform="translate(870,370)"><rect x="-64" y="-14" width="128" height="14" fill="#c9c2b2" stroke="#1d2160" stroke-width="2.5"/>
+   <path d="M-50,-14 L-44,-150 L44,-150 L50,-14 Z" fill="#efe9dc" stroke="#1d2160" stroke-width="3"/><path d="M-46,-60 h92 M-45,-100 h90" stroke="#c9c2b2" stroke-width="3"/>
+   <rect x="-56" y="-162" width="112" height="14" fill="#c9c2b2" stroke="#1d2160" stroke-width="2.5"/>
+   <rect x="-3" y="-330" width="6" height="170" fill="#eef0f8" stroke="#9aa0b8"/>
+   <g class="flag"><path d="M3,-330 L170,-330 L170,-222 L3,-222 Z" fill="#e8423f"/><path d="${star(86,-276,28,11)}" fill="#ffd400"/></g></g>
+  ${vill('tV1',3,190,700,1.6,1)}${vill('tV2',4,130,704,1.6,1)}${pair('tP',1.25)}`);
+  place('#tP',-60,704,1);
+  tOn(.2,()=>{tCap('Cột cờ Lũng Cú · điểm cực Bắc');cls('#tV1','waving');cls('#tV2','waving');});
+  tOn(.3,()=>walk('#tP',true));
+  T.to(q('#tP'),{x:268,y:700,duration:1.6,ease:'none'},.3);
+  tOn(1.0,()=>say(190,hy(700,1.5),'Leo lên đỉnh chụp ảnh đi!',1.3));
+  T.to(q('#tP'),{x:612,y:378,duration:3.2,ease:'none'},1.9);
+  tOn(3.0,()=>say(440,hy(540,1.25),'Gần tới rồi, cố lên em!',1.1));
+  T.to(q('#tP'),{x:730,y:374,duration:.9,ease:'none'},5.1);
+  tOn(6.0,()=>walk('#tP',false));
+  tOn(6.2,()=>say(730,hy(374,1.25),'Tới điểm cực Bắc rồi!',1.3));
+  tOn(7.8,()=>say(730,hy(374,1.25),'Lá cờ rộng 54 m², ứng với 54 dân tộc!',1.7));
+  tOn(9.8,()=>{cls('#tPG','calling');say(760,hy(374,1.25),'Check-in nào!',.9);});
+  tOn(11.0,()=>snap(820,236,540,405,'Cột cờ Lũng Cú · Check-in!'));
+  tOn(11.8,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer waving');sBurst(760,300,26);});
+  T.to({},{duration:3.4},11.8);
+}
+
+/* --- 6 · Lô Lô Chải: bữa tối bên bếp lửa --- */
+function sLoLoNight(){const r=rnd(26);
+  tSet('night',`<g>${starsSvg(r,120,420)}</g>${moonDisc(980,110)}${karstRow(r,-300,1500,500,140,260,'#141a4a')}
+  ${ground(500,'#1e2550')}${tHouse(130,560,1.6,true)}${tHouse(1090,560,1.5,true)}
+  <rect x="-2400" y="560" width="6000" height="900" fill="#2a2f5e"/>${fire(660,650)}
+  ${vill('tH',0,470,652,1.9,-1)}${vill('tM',1,850,652,1.9,-1)}${vill('tKid',4,940,658,1.9,-1)}
+  ${pair('tP',1.7)}${cloth(290,604,230,60,'#2e3384')}${bowl(245,604,'#f7f3e3')}${bowl(290,604,'#8a3b2a')}${bowl(335,604,'#7fbe4e')}${steam(290,592,.8)}`);
+  place('#tP',290,664);
+  tOn(.2,()=>tCap('Bữa tối bên bếp lửa · Lô Lô Chải'));
+  tOn(1.0,()=>{cls('#tH','waving');say(470,hy(652,1.8),'Cơm lam, thịt gác bếp đây, ăn đi!',1.6);});
+  tOn(2.8,()=>{cls('#tH','','waving');cls('#tPB','eat','hold-r');cls('#tPG','eat','hold-l');});
+  tOn(3.4,()=>say(290,hy(664,1.7),'Ngon quá ạ!',1.1));
+  tOn(4.8,()=>{tCap('Nghe tiếng khèn H’Mông');Snd.khen();cls('#tM','cheer');cls('#tKid','cheer waving');});
+  T.to(q('#tM'),{x:'-=40',duration:.8,yoyo:true,repeat:5,ease:'sine.inOut'},4.8);
+  tOn(6.4,()=>say(290,hy(664,1.7),'Vui quá, ra nhảy cùng đi anh!',1.4));
+  tOn(8.0,()=>{cls('#tPB','hold-r','eat');cls('#tPG','hold-l','eat');walk('#tP',true);});
+  T.to(q('#tP'),{x:540,y:680,duration:1.4,ease:'none'},8.0);
+  tOn(9.4,()=>{walk('#tP',false);cls('#tP','cheer');});
+  tOn(10.4,()=>snap(620,520,640,480,'Đêm lửa trại · Lô Lô Chải'));
+  T.to({},{duration:3.4},10.6);
+}
+
+/* --- 7 · Lô Lô Chải: sương sớm --- */
+function sLoLoMist(){const r=rnd(27);
+  let mist='';for(let i=0;i<10;i++)mist+=`<ellipse class="mst" cx="${(r()*1400-100).toFixed(0)}" cy="${(360+r()*300).toFixed(0)}" rx="${(260+r()*220).toFixed(0)}" ry="${(40+r()*40).toFixed(0)}" fill="#ffffff" opacity=".78"/>`;
+  tSet('mist',`${karstRow(r,-300,1500,470,150,280,'#9fb4c4')}${karstRow(r,-300,1500,520,90,180,'#7f9eaa')}${ground(520,'#8fb879')}
+  ${tHouse(250,566,1.4)}${tHouse(930,560,1.6)}<rect x="-2400" y="590" width="6000" height="900" fill="#a3c58a"/>
+  ${vill('tK1',2,1080,656,1.9,-1)}${vill('tK2',4,1150,660,1.9,-1)}
+  ${pair('tP',1.7)}${cloth(560,606,200,58,'#8a5a2b')}${cup(528,606)}${cup(592,606)}${steam(528,590,.6)}${steam(592,590,.6)}
+  <g id="tMist">${mist}</g>`);
+  place('#tP',560,664);
+  tOn(.2,()=>tCap('Cà phê sương sớm · Lô Lô Chải'));
+  tOn(1.0,()=>{cls('#tPG','eat','hold-l');say(560,hy(664,1.7),'Cà phê nóng giữa sương mù, chill ghê!',1.7);});
+  T.to(tsv.querySelectorAll('.mst'),{x:i=>i%2?320:-320,opacity:0,duration:6,ease:'sine.in',stagger:.25},2.2);
+  tOn(3.4,()=>cls('#tPG','hold-l','eat'));
+  tOn(4.2,()=>say(560,hy(664,1.7),'Sương tan dần, làng hiện ra rồi kìa!',1.6));
+  tOn(6.4,()=>{cls('#tK1','waving');cls('#tK2','cheer');say(1080,hy(656,1.3),'Chào anh chị!',1.2);});
+  tOn(8.0,()=>{cls('#tPB','waving','hold-r');say(560,hy(664,1.7),'Chào các em!',1.0);});
+  tOn(9.4,()=>snap(700,500,660,495,'Sáng sớm · Lô Lô Chải'));
+  T.to({},{duration:3.4},9.6);
+}
+
+/* --- 8 & 11 · ăn ở phố cổ / chợ --- */
+function eatery(o){const r=rnd(o.seed);
+  let shops='';for(let i=0;i<5;i++){const x=-20+i*260;shops+=`<g transform="translate(${x},520)"><rect x="0" y="-200" width="240" height="200" fill="${i%2?'#cdb48e':'#d9c7a6'}" stroke="#1d2160" stroke-width="3"/><path d="M-12,-196 L120,-250 L252,-196 Z" fill="#4a3530" stroke="#1d2160" stroke-width="3"/><rect x="0" y="-112" width="240" height="10" fill="#8a5a2b"/>${[24,95,166].map(dx=>`<rect x="${dx}" y="-178" width="50" height="50" fill="#5a3420" stroke="#1d2160" stroke-width="2"/><path d="M${dx+25},-178 v50" stroke="#8a5a2b" stroke-width="2"/>`).join('')}<rect x="80" y="-92" width="80" height="92" fill="#3b2a22" stroke="#1d2160" stroke-width="2.5"/></g>`;}
+  let lan='';for(let x=40;x<1200;x+=110)lan+=lantern(x,330+((x/110|0)%2)*14);
+  const pot=o.big?`<path d="M760,566 h200 l-14,-62 h-172 Z" fill="#4d5a60" stroke="#1d2160" stroke-width="3"/><ellipse cx="860" cy="504" rx="86" ry="12" fill="#a0522d" stroke="#1d2160" stroke-width="2.5"/>${steam(830,494,1.2)}${steam(890,494,1.2)}`
+    :`<path d="M790,566 h140 l-10,-56 h-120 Z" fill="#5d6b70" stroke="#1d2160" stroke-width="3"/><ellipse cx="860" cy="510" rx="60" ry="9" fill="#f2ead7" stroke="#1d2160" stroke-width="2.5"/>${steam(860,500,1.1)}`;
+  tSet(o.sky,`${karstRow(r,-300,1500,330,100,200,'#8fb3ad')}${shops}<path d="M-20,316 Q300,346 600,316 T1220,316" stroke="#1d2160" stroke-width="2" fill="none"/>${lan}
+  ${ground(520,'#c4b79c','#d8ccb4')}${vill('tV',o.vi,860,600,1.9,-1)}
+  <rect x="740" y="566" width="240" height="94" rx="6" fill="#8a5a2b" stroke="#1d2160" stroke-width="3"/><rect x="760" y="588" width="200" height="50" rx="4" fill="#ff8a1f" opacity=".8"/>${pot}
+  <rect x="742" y="530" width="236" height="0" fill="none"/>
+  ${pair('tP',1.7)}${cloth(380,612,250,56,'#2e3384')}${bowl(336,612,o.food)}${bowl(424,612,o.food)}${steam(336,600,.7)}${steam(424,600,.7)}`);
+  place('#tP',-150,668,1);
+  tOn(.2,()=>tCap(o.cap));
+  walkTo('#tP',380,.2,2.8);
+  tOn(1.2,()=>{cls('#tV','waving');say(860,hy(600,1.8),o.lines[0],1.6);});
+  tOn(3.4,()=>{cls('#tV','','waving');cls('#tPB','eat','hold-r');cls('#tPG','eat','hold-l');});
+  tOn(4.0,()=>say(400,hy(668,1.7),o.lines[1],1.6));
+  tOn(6.0,()=>say(360,hy(668,1.7),o.lines[2],1.6));
+  tOn(8.0,()=>say(860,hy(600,1.8),o.lines[3],1.5));
+  tOn(9.8,()=>snap(560,500,660,495,o.photo));
+  tOn(10.6,()=>{cls('#tPB','cheer','eat');cls('#tPG','cheer','eat');});
+  T.to({},{duration:3.2},10.6);
+}
+function sDongVan(){eatery({seed:28,sky:'day',vi:0,food:'#e9dcc0',cap:'Phố cổ Đồng Văn · cháo ấu tẩu',
+  lines:['Cháo ấu tẩu nóng đây, ăn sáng đi hai cháu!','Hơi đắng nhẹ mà thơm ghê!','Ăn xong ấm bụng hẳn luôn!','Nhà cô nấu kỹ lắm, yên tâm nhé!'],photo:'Phố cổ Đồng Văn · bữa sáng'});}
+function sMeoVac(){eatery({seed:31,sky:'noon',vi:5,food:'#8a4a2a',big:true,cap:'Chợ Mèo Vạc · thắng cố',
+  lines:['Thắng cố nóng hổi đây, ăn thử đi!','Nước dùng thơm mùi thảo quả ghê!','Ăn với bánh ngô nữa thì hết sẩy!','Ăn no rồi về Quản Bạ nhé!'],photo:'Chợ Mèo Vạc · bữa trưa'});}
+
+/* --- 9 & 14 · điểm ngắm --- */
+function viewpoint(o){const r=rnd(o.seed);
+  tSet(o.sky,`${o.back(r)}<rect x="-2400" y="560" width="6000" height="900" fill="#9a8a72"/><rect x="-2400" y="560" width="6000" height="8" fill="#b8a88e"/>${rail(-40,1240,566)}
+  ${o.front||''}${pair('tP',1.7)}${cloth(560,614,210,56,'#11b3ae')}${cup(528,614)}${cup(592,614)}${steam(528,598,.6)}${steam(592,598,.6)}`);
+  place('#tP',-150,672,1);
+  tOn(.2,()=>tCap(o.cap));
+  walkTo('#tP',560,.2,2.8);
+  tOn(3.2,()=>say(560,hy(672,1.7),o.lines[0],1.6));
+  tOn(5.0,()=>{cls('#tPG','eat','hold-l');say(560,hy(672,1.7),o.lines[1],1.6);});
+  tOn(7.0,()=>{cls('#tPG','calling','eat');say(590,hy(672,1.7),o.lines[2],1.1);});
+  tOn(8.4,()=>snap(600,440,700,525,o.photo));
+  tOn(9.2,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer');});
+  if(q('#tBirds'))T.fromTo(q('#tBirds'),{x:-200},{x:1400,duration:12,ease:'none'},0);
+  T.to({},{duration:3.2},9.2);
+}
+function sMaPiLeng(){viewpoint({seed:29,sky:'day',cap:'Đèo Mã Pì Lèng · vực Tu Sản',photo:'Mã Pì Lèng · nhìn xuống Nho Quế',
+  lines:['Nhìn kìa, sông Nho Quế bé xíu dưới vực!','Ngồi đây uống cà phê, gió mát lộng luôn!','Chụp một tấm với vực Tu Sản!'],
+  back:r=>`${cloudsRow(r,3,40,140)}${karstRow(r,-300,1500,330,90,200,'#9fb7c9')}
+   <path d="M-400,560 L-400,120 C-100,160 300,240 540,560 Z" fill="#4f7f5a" stroke="#2f5a3a" stroke-width="3"/>
+   <path d="M1600,560 L1600,110 C1300,150 880,250 680,560 Z" fill="#4a7756" stroke="#2f5a3a" stroke-width="3"/>
+   <path d="M100,250 C200,330 320,420 420,520 M1100,230 C1000,320 860,430 760,520" stroke="#3d6a4a" stroke-width="4" fill="none"/>
+   <path d="M540,560 C570,500 600,420 618,330 L642,330 C652,420 664,500 680,560 Z" fill="#6f8f5a"/>
+   <path d="M612,560 C596,500 652,452 630,402 C618,372 642,346 632,330" stroke="#2ec4c6" stroke-width="10" fill="none" stroke-linecap="round"/>${birds('tBirds',0,190)}`});}
+function sCongTroi(){viewpoint({seed:34,sky:'mist',cap:'Cổng Trời Quản Bạ',photo:'Cổng Trời · thung lũng Quản Bạ',
+  lines:['Cả thung lũng Quản Bạ dưới chân mình!','Ngồi cà phê ngắm mây trôi, chill quá!','Chụp ở Cổng Trời nào!'],
+  back:r=>`${cloudsRow(r,4,40,170,'#ffffff',.9)}${karstRow(r,-300,1500,380,100,200,'#a9bccb')}<rect x="-2400" y="380" width="6000" height="200" fill="#8fc46a"/>
+   ${terr(200,470,150,50,5)}${terr(1010,480,170,56,6)}
+   <path d="M430,470 C440,400 540,400 552,470 Z M560,470 C572,400 672,400 682,470 Z" fill="#7fc25a" stroke="#4f8f3a" stroke-width="2.5"/>
+   ${house(760,470,1.3)}${house(800,480,1.1)}${house(330,486,1.2)}${birds('tBirds',0,220)}`,
+  front:`<g transform="translate(150,566)"><rect x="-90" y="-210" width="14" height="210" fill="#8a5a2b" stroke="#1d2160" stroke-width="2"/><rect x="76" y="-210" width="14" height="210" fill="#8a5a2b" stroke="#1d2160" stroke-width="2"/><rect x="-110" y="-250" width="220" height="48" rx="8" fill="#ffc531" stroke="#1d2160" stroke-width="3"/><text y="-219" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="22" fill="#1d2160">CỔNG TRỜI</text></g>`});}
+
+/* --- 10 · Sông Nho Quế: đi thuyền + ăn trưa --- */
+function sNhoQue(){const r=rnd(30);
+  let walls='';for(let x=-200;x<3800;x+=r()*160+220){const h=260+r()*200;walls+=`<path d="M${(x-160).toFixed(0)},470 L${(x-120).toFixed(0)},${(470-h).toFixed(0)} C${(x-60).toFixed(0)},${(440-h).toFixed(0)} ${(x+40).toFixed(0)},${(450-h).toFixed(0)} ${(x+90).toFixed(0)},${(480-h).toFixed(0)} L${(x+160).toFixed(0)},470 Z" fill="${r()<.5?'#5f8a6a':'#4f7a5c'}" stroke="#2f5a3a" stroke-width="3"/><path d="M${(x-80).toFixed(0)},${(510-h).toFixed(0)} l10,80 M${(x+20).toFixed(0)},${(500-h).toFixed(0)} l-8,90" stroke="#3d6a4a" stroke-width="3"/>`;}
+  let rip='';for(let i=0;i<46;i++)rip+=`<path d="M${(r()*3600-200).toFixed(0)},${(495+r()*200).toFixed(0)} h${(30+r()*50).toFixed(0)}" stroke="#bff4f2" stroke-width="3" stroke-linecap="round" opacity=".8"/>`;
+  tSet('day',`${cloudsRow(r,3,30,120)}${karstRow(r,-300,1500,300,100,180,'#9fb7c9')}<g id="tWalls">${walls}</g>
+  <rect x="-2400" y="470" width="6000" height="900" fill="#1fb5b0"/><rect x="-2400" y="470" width="6000" height="10" fill="#15948f"/><g id="tRip">${rip}</g>
+  <g id="tBoat"><ellipse cx="570" cy="606" rx="360" ry="16" fill="#15948f" opacity=".6"/>
+   <rect x="292" y="370" width="6" height="200" fill="#8a5a2b" transform="rotate(-16 295 570)"/>${vill('tBm',1,330,568,1.8,1)}
+   ${pair('tP',1.55)}
+   <g id="tMeal" opacity="0">${cloth(640,524,180,38,'#e8423f')}${bowl(600,524,'#f7f3e3')}${bowl(645,524,'#e8a33f')}${bowl(690,524,'#7fbe4e')}${steam(645,512,.7)}</g>
+   <path d="M240,540 L900,540 C880,580 840,600 790,604 L330,604 C290,600 260,580 240,540 Z" fill="#8a5a2b" stroke="#1d2160" stroke-width="3"/><path d="M252,550 H888" stroke="#ffc531" stroke-width="4"/></g>`);
+  place('#tP',620,572);
+  T.to(q('#tWalls'),{x:-1700,duration:15,ease:'none'},0);
+  T.to(q('#tRip'),{x:-1300,duration:15,ease:'none'},0);
+  T.to(q('#tBoat'),{y:4,rotation:.8,transformOrigin:'50% 100%',duration:1,yoyo:true,repeat:13,ease:'sine.inOut'},0);
+  tOn(.2,()=>tCap('Đi thuyền qua hẻm Tu Sản · sông Nho Quế'));
+  tOn(1.2,()=>say(650,hy(572,1.55),'Nước xanh như ngọc luôn anh ơi!',1.5));
+  tOn(3.0,()=>say(330,hy(568,1.7),'Vách đá hai bên cao mấy trăm mét đó!',1.6));
+  tOn(5.0,()=>say(600,hy(572,1.55),'Đẹp như tranh vẽ!',1.2));
+  tOn(6.6,()=>tCap('Bữa trưa trên thuyền'));
+  T.fromTo(q('#tMeal'),{y:24,opacity:0},{y:0,opacity:1,duration:.6,ease:'back.out(2)'},6.6);
+  tOn(7.4,()=>{cls('#tPB','eat','hold-r');cls('#tPG','eat','hold-l');say(330,hy(568,1.7),'Mời hai cháu ăn cơm!',1.3);});
+  tOn(9.0,()=>say(650,hy(572,1.55),'Vừa ăn vừa ngắm sông, tuyệt quá!',1.6));
+  tOn(11.0,()=>snap(600,460,640,480,'Sông Nho Quế · bữa trưa trên thuyền'));
+  tOn(11.8,()=>{cls('#tPB','cheer waving','eat');cls('#tPG','cheer','eat');});
+  T.to({},{duration:3.2},11.8);
+}
+
+/* --- 12 · Quản Bạ: ngắm sao --- */
+function sQBNight(){const r=rnd(32);
+  tSet('night',`<g>${starsSvg(r,150,460)}</g>${moonDisc(200,120)}<path id="tShoot" d="M940,70 l-120,68" stroke="#ffffff" stroke-width="3.4" stroke-linecap="round" opacity="0"/>
+  ${karstRow(r,-300,1500,470,120,220,'#141a4a')}
+  <path d="M380,522 C392,398 566,398 582,522 Z M598,522 C612,398 786,398 800,522 Z" fill="#1d2452" stroke="#2f3878" stroke-width="3"/>
+  ${ground(520,'#1e2550')}${tHouse(1060,584,1.5,true)}<rect x="-2400" y="584" width="6000" height="900" fill="#2a2f5e"/>
+  ${pair('tP',1.7)}${cloth(470,622,220,56,'#7a6cf0')}${cup(440,622)}${cup(500,622)}${steam(440,606,.6)}${steam(500,606,.6)}`);
+  place('#tP',470,680);
+  tOn(.2,()=>tCap('Uống trà ngắm sao · Quản Bạ'));
+  tOn(1.0,()=>say(470,hy(680,1.7),'Trời nhiều sao quá anh ơi!',1.4));
+  tOn(2.8,()=>say(450,hy(680,1.7),'Hai ngọn kia là Núi Đôi đó em.',1.5));
+  T.fromTo(q('#tShoot'),{x:0,y:0,opacity:0},{x:-300,y:170,opacity:1,duration:.9,ease:'power1.in'},4.6);
+  T.to(q('#tShoot'),{opacity:0,duration:.3},5.5);
+  tOn(5.0,()=>say(490,hy(680,1.7),'Sao băng kìa! Ước đi!',1.2));
+  tOn(6.8,()=>say(450,hy(680,1.7),'Ước năm sau mình lại lên đây!',1.5));
+  tOn(8.6,()=>{cls('#tPG','eat','hold-l');cls('#tPB','eat','hold-r');});
+  tOn(9.6,()=>snap(600,470,700,525,'Đêm sao · Quản Bạ'));
+  tOn(10.4,()=>{cls('#tPG','hold-l cheer','eat');cls('#tPB','hold-r','eat');});
+  T.to({},{duration:3.2},10.4);
+}
+
+/* --- 13 · Núi Đôi: bình minh --- */
+function sNuiDoi(){const r=rnd(33);
+  let mist='';for(let i=0;i<8;i++)mist+=`<ellipse class="mst" cx="${(r()*1400-100).toFixed(0)}" cy="${(470+r()*120).toFixed(0)}" rx="${(240+r()*200).toFixed(0)}" ry="${(30+r()*30).toFixed(0)}" fill="#ffffff" opacity=".7"/>`;
+  let lines='';for(let k=1;k<6;k++){lines+=`<path d="M${280+k*20},${560-k*30} Q425,${520-k*34} ${570-k*20},${560-k*30}" stroke="#a7d97a" stroke-width="4" fill="none"/><path d="M${630+k*20},${560-k*30} Q775,${520-k*34} ${920-k*20},${560-k*30}" stroke="#a7d97a" stroke-width="4" fill="none"/>`;}
+  tSet('dawn',`${sunDisc(600,560,46,'#ffb347')}${karstRow(r,-300,1500,470,100,200,'#c79aa8')}
+  <path d="M260,560 C276,360 560,360 590,560 Z M610,560 C640,360 924,360 940,560 Z" fill="#7fc25a" stroke="#4f8f3a" stroke-width="3"/>${lines}
+  ${ground(556,'#8fc46a')}<path d="M-2400,676 H3600" stroke="#d8c39a" stroke-width="40"/>${flowers(r,-60,1260,590,650,160)}${pair('tP',1.7)}<g>${mist}</g>${flowers(r,-60,1260,700,740,60)}`);
+  place('#tP',-150,684,1);
+  T.to(q('#tSun'),{y:'-=300',duration:9,ease:'sine.out'},0);
+  T.to(tsv.querySelectorAll('.mst'),{x:i=>i%2?260:-260,opacity:0,duration:7,ease:'sine.in',stagger:.2},1.5);
+  tOn(.2,()=>tCap('Bình minh trên Núi Đôi Cô Tiên'));
+  walkTo('#tP',470,.2,3);
+  tOn(3.4,()=>say(470,hy(684,1.7),'Mặt trời lên giữa hai ngọn núi kìa!',1.6));
+  tOn(5.4,()=>say(470,hy(684,1.7),'Dậy sớm đúng là đáng ghê!',1.4));
+  tOn(7.2,()=>{cls('#tPG','calling');say(500,hy(684,1.7),'Chụp với Núi Đôi nào!',1.0);});
+  tOn(8.6,()=>snap(600,470,700,525,'Bình minh · Núi Đôi Cô Tiên'));
+  tOn(9.4,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer');});
+  T.to({},{duration:3.2},9.4);
+}
+
+/* --- 15 · Thạch Sơn Thần --- */
+function sThachSon(){const r=rnd(35);
+  let back='';for(let i=0;i<14;i++)back+=rockSpire(-60+i*95+r()*30,520,30+r()*30,110+r()*120,'#aab6b1');
+  let mid='';for(let i=0;i<9;i++)mid+=rockSpire(-40+i*150+r()*40,610,40+r()*30,150+r()*110,'#97a59f');
+  let front='';[[90,740,80,250],[1110,740,86,270],[760,742,48,110]].forEach(([x,y,w,h])=>front+=rockSpire(x,y,w,h,'#879590'));
+  tSet('day',`${cloudsRow(r,4,40,170)}${karstRow(r,-300,1500,420,120,200,'#9fb7c9')}${ground(470,'#9bcf63')}${back}
+  <rect x="-2400" y="560" width="6000" height="900" fill="#a8d86e"/>${flowers(r,-60,1260,560,610,120)}${mid}
+  <path d="M-2400,684 C300,664 900,700 3600,676" stroke="#d8c39a" stroke-width="44" fill="none"/>${pair('tP',1.6)}${front}`);
+  place('#tP',-150,690,1);
+  tOn(.2,()=>tCap('Rừng đá Thạch Sơn Thần'));
+  walkTo('#tP',470,.2,3);
+  tOn(3.4,()=>say(470,hy(690,1.6),'Rừng đá như mê cung vậy!',1.4));
+  tOn(5.0,()=>say(450,hy(690,1.6),'Người ta kể đây là nơi thần đá ngự đó.',1.7));
+  walkTo('#tP',880,7.0,2.4);
+  tOn(9.6,()=>{cls('#tPG','calling');say(900,hy(690,1.6),'Chụp với đá cổ nào!',1.0);});
+  tOn(10.9,()=>snap(820,520,640,480,'Thạch Sơn Thần · rừng đá'));
+  tOn(11.6,()=>{cls('#tPG','cheer','calling');cls('#tPB','cheer');});
+  T.to({},{duration:3.2},11.6);
+}
+
+/* --- 16 · Dốc Bắc Sum: đổ đèo --- */
+function sBacSum(){const r=rnd(36);
+  const d=smooth([[1260,150],[900,176],[300,232],[250,266],[880,316],[930,352],[320,414],[280,450],[860,508],[910,548],[420,624],[-100,668]]);
+  let pines='';for(let i=0;i<26;i++){const x=r()*1300-50,y=200+r()*480;pines+=pine(x,y,1.6+(y-200)/480*2.2);}
+  tSet('day',`${cloudsRow(r,4,20,110)}${karstRow(r,-300,1500,250,70,150,'#9fb7c9')}
+  <path d="M-400,900 L-400,230 C200,110 800,90 1600,120 L1600,900 Z" fill="#7fbf5a" stroke="#4f8f3a" stroke-width="3"/>${pines}
+  <path id="tRoad" d="${d}" fill="none" stroke="#1d2160" stroke-width="30" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="${d}" fill="none" stroke="#7d8094" stroke-width="22" stroke-linecap="round" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="10 12"/>
+  <g id="tBike"><g id="tBikeF"><g class="bob"><g transform="scale(1.7)">${bike()}</g></g></g></g>`);
+  const path=q('#tRoad'),len=path.getTotalLength(),bk=q('#tBike'),bf=q('#tBikeF');
+  const at=p=>path.getPointAtLength(Math.max(0,Math.min(len,p*len)));
+  const M={p:0};const pos=()=>{const a=at(M.p);return [a.x,a.y];};
+  const draw=()=>{const a=at(M.p),b=at(M.p+.004),dx=b.x-a.x,dy=b.y-a.y;
+    bf.setAttribute('transform',dx<0?'scale(-1,1)':'');
+    const rot=Math.max(-22,Math.min(22,Math.atan2(dy,Math.abs(dx)+.01)*57.3*(dx<0?-1:1)));
+    bk.setAttribute('transform',`translate(${a.x.toFixed(1)},${(a.y+6).toFixed(1)}) rotate(${rot.toFixed(1)})`);};
+  draw();
+  tOn(.2,()=>{tCap('Đổ đèo Dốc Bắc Sum');Snd.engineStart&&Snd.engineStart();});
+  T.to(M,{p:1,duration:13,ease:'none',onUpdate:draw},.4);
+  tOn(1.6,()=>{const [x,y]=pos();say(x,y-92,'Về số thấp, đi chậm thôi anh!',1.4);});
+  tOn(4.4,()=>{const [x,y]=pos();say(x,y-92,'Cung ziczac đẹp quá!',1.3);});
+  tOn(7.4,()=>{const [x,y]=pos();say(x,y-92,'Nhìn xuống thung lũng kìa em!',1.4);});
+  tOn(9.6,()=>snap(600,390,960,720,'Dốc Bắc Sum · đổ đèo'));
+  tOn(13.4,()=>Snd.engineStop());
+  T.to({},{duration:1.6},13.4);
+}
+
+/* --- 17 · mua quà trước khi về --- */
+function sQua(){const r=rnd(37);
+  let jars='';for(let i=0;i<5;i++)jars+=`<g transform="translate(${-250+i*42},-176)"><rect x="-14" y="-34" width="28" height="34" rx="6" fill="#f0a830" stroke="#1d2160" stroke-width="2"/><rect x="-12" y="-42" width="24" height="9" rx="2" fill="#e8423f" stroke="#1d2160" stroke-width="1.5"/></g>`;
+  let tea='';for(let i=0;i<5;i++)tea+=`<rect x="${30+i*46}" y="-216" width="34" height="40" rx="4" fill="${i%2?'#3c8a4a':'#5aa55c'}" stroke="#1d2160" stroke-width="2"/>`;
+  let scarf='';const sc=['#ff4f9a','#11b3ae','#ffc531','#7a6cf0','#e8423f','#ff8a1f'];for(let i=0;i<12;i++)scarf+=`<rect x="${-276+i*46}" y="-138" width="34" height="${54+(i%3)*10}" fill="${sc[i%6]}" stroke="#1d2160" stroke-width="2"/><path d="M${-276+i*46},${-120+(i%3)*4} h34" stroke="#ffffff" stroke-width="3" opacity=".7"/>`;
+  tSet('noon',`${cloudsRow(r,3,30,140)}${karstRow(r,-300,1500,330,100,200,'#9fb7c9')}${ground(520,'#c4b79c','#d8ccb4')}
+  <g transform="translate(560,560)"><rect x="-300" y="-300" width="600" height="300" fill="#f2e3c6" stroke="#1d2160" stroke-width="3"/>
+   <rect x="-320" y="-344" width="640" height="56" rx="8" fill="#e8423f" stroke="#1d2160" stroke-width="3"/>
+   <text y="-306" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="28" fill="#ffc531">ĐẶC SẢN HÀ GIANG</text>
+   <rect x="-290" y="-176" width="580" height="8" fill="#8a5a2b"/>${jars}${tea}<path d="M-290,-140 H290" stroke="#8a5a2b" stroke-width="3"/>${scarf}</g>
+  ${vill('tV',3,700,560,1.8,-1)}<rect x="560" y="470" width="300" height="90" rx="6" fill="#c98b4a" stroke="#1d2160" stroke-width="3"/>
+  ${vill('tF1',0,1000,664,1.9,-1)}${vill('tF2',2,1070,668,1.9,-1)}${pair('tP',1.7)}
+  <g id="tBag" opacity="0" transform="translate(300,676)"><path d="M-22,0 L-18,-46 L18,-46 L22,0 Z" fill="#ff4f9a" stroke="#1d2160" stroke-width="2.5"/><path d="M-10,-46 q10,-16 20,0" fill="none" stroke="#1d2160" stroke-width="2.5"/><text y="-17" text-anchor="middle" font-family="Baloo 2, sans-serif" font-weight="800" font-size="11" fill="#ffffff">HG</text></g>`);
+  place('#tP',-150,676,1);
+  tOn(.2,()=>tCap('Mua quà đặc sản trước khi về'));
+  walkTo('#tP',370,.2,2.8);
+  tOn(3.2,()=>{cls('#tV','waving');say(700,hy(560,1.7),'Mật ong bạc hà, chè Shan tuyết đây!',1.6);});
+  tOn(5.0,()=>{cls('#tV','','waving');say(390,hy(676,1.7),'Lấy cho cháu hai hũ mật ong ạ!',1.4);});
+  tOn(6.6,()=>say(350,hy(676,1.7),'Thêm gói chè với chiếc khăn thổ cẩm nữa!',1.6));
+  T.fromTo(q('#tBag'),{opacity:0,y:20},{opacity:1,y:0,duration:.5,ease:'back.out(2)'},8.2);
+  tOn(8.8,()=>{tCap('Tạm biệt Hà Giang!');cls('#tF1','waving');cls('#tF2','waving cheer');say(1000,hy(664,1.8),'Hẹn gặp lại hai bạn!',1.5);});
+  tOn(10.4,()=>{cls('#tPB','waving cheer','hold-r');cls('#tPG','cheer');say(370,hy(676,1.7),'Tạm biệt, nhất định sẽ quay lại!',1.5);});
+  tOn(12.2,()=>snap(640,500,760,570,'Tạm biệt Hà Giang · 13.10'));
+  T.to({},{duration:3.2},12.4);
+}
+
+/* --- config + lifecycle --- */
+const TOURS={
+  1:{place:'Cột mốc Km0',q:'Chụp ảnh check‑in ở cột mốc Km0?',btn:'Chụp ảnh Km0',scene:sKm0},
+  2:{place:'Yên Minh',q:'Dạo chợ phiên rồi nghỉ trưa dưới rừng thông?',btn:'Đi chợ phiên',scene:sYenMinh},
+  3:{place:'Thung lũng Sủng Là',q:'Dạo ruộng hoa, ghé Nhà của Pao?',btn:'Dạo ruộng hoa',scene:sSungLa},
+  4:{place:'Dinh Vua Mèo',q:'Vào thăm dinh thự họ Vương?',btn:'Vào thăm dinh',scene:sDinh},
+  5:{place:'Cột cờ Lũng Cú',q:'Leo lên cột cờ chụp ảnh check‑in?',btn:'Lên cột cờ',scene:sLungCu},
+  6:{place:'Làng Lô Lô Chải',q:'Ăn tối bên bếp lửa cùng bà con?',btn:'Ngồi bên bếp lửa',scene:sLoLoNight},
+  7:{place:'Làng Lô Lô Chải',q:'Uống cà phê ngắm sương sớm?',btn:'Ngắm sương sớm',scene:sLoLoMist},
+  8:{place:'Phố cổ Đồng Văn',q:'Ăn bát cháo ấu tẩu ở phố cổ?',btn:'Ăn cháo ấu tẩu',scene:sDongVan},
+  9:{place:'Đèo Mã Pì Lèng',q:'Ngồi cà phê nhìn xuống vực Tu Sản?',btn:'Ra điểm ngắm',scene:sMaPiLeng},
+  10:{place:'Sông Nho Quế',q:'Đi thuyền và ăn trưa trên sông Nho Quế?',btn:'Lên thuyền',scene:sNhoQue},
+  11:{place:'Mèo Vạc',q:'Thử bát thắng cố ở chợ Mèo Vạc?',btn:'Ăn thắng cố',scene:sMeoVac},
+  12:{place:'Quản Bạ',q:'Uống trà ngắm sao ở homestay?',btn:'Ngắm sao đêm',scene:sQBNight},
+  13:{place:'Núi Đôi Cô Tiên',q:'Đón bình minh trên Núi Đôi?',btn:'Đón bình minh',scene:sNuiDoi},
+  14:{place:'Cổng Trời Quản Bạ',q:'Ngồi cà phê ngắm thung lũng?',btn:'Ra Cổng Trời',scene:sCongTroi},
+  15:{place:'Thạch Sơn Thần',q:'Đi dạo trong rừng đá?',btn:'Dạo rừng đá',scene:sThachSon},
+  16:{place:'Dốc Bắc Sum',q:'Đổ đèo Bắc Sum bằng xe máy?',btn:'Đổ đèo',scene:sBacSum},
+  17:{place:'TP Hà Giang',q:'Mua quà đặc sản trước khi về?',btn:'Đi mua quà',scene:sQua}
+};
+function markExplored(){rows.forEach((row,k)=>row.classList.toggle('explored',explored.has(k)));}
+function showExplore(i){
+  const pop=$('explorePop'),btn=$('exploreBtn'),cfg=G?TOURS[i]:null;
+  if(!cfg){pop.hidden=true;btn.hidden=true;return;}
+  btn.hidden=false;$('exploreBtnLabel').textContent=explored.has(i)?`Xem lại · ${cfg.btn}`:cfg.btn;
+  $('popQ').textContent=cfg.q;$('popGoLabel').textContent=cfg.btn;$('popDone').hidden=!explored.has(i);
+  pop.hidden=false;
+  if(!reduce)G.fromTo(pop,{y:-14,scale:.85,opacity:0},{y:0,scale:1,opacity:1,duration:.5,delay:.6,ease:'back.out(2)'});
+}
+function hideExplore(){const p=$('explorePop');if(p)p.hidden=true;}
+function tourStart(i){
+  const cfg=TOURS[i];if(!cfg||!G)return;
+  stopAuto();hideExplore();tourIdx=i;
+  if(T){T.kill();T=null;}
+  tourEl.hidden=false;document.documentElement.style.overflow='hidden';
+  $('polaroid').hidden=true;$('tourEnd').hidden=true;$('tcap').textContent='';
+  $('tPlace').textContent=cfg.place;$('tTime').textContent=`${DAYS[STOPS[i].day].name} · ${STOPS[i].time}`;
+  Snd.init();
+  T=G.timeline({paused:true,onComplete:tourDone});
+  cfg.scene();
+  G.fromTo(tourEl,{clipPath:'circle(0% at 50% 55%)'},{clipPath:'circle(150% at 50% 55%)',duration:reduce?0:.8,ease:'power2.out',onComplete:()=>{G.set(tourEl,{clearProps:'clipPath'});if(T)T.play();}});
+  $('tClose').focus({preventScroll:true});
+}
+function tourDone(){
+  explored.add(tourIdx);markExplored();showExplore(cur);hideExplore();
+  const end=$('tourEnd');end.hidden=false;$('tNext').hidden=!(tourIdx===cur&&cur<LAST);
+  G.fromTo(end,{y:30,opacity:0},{y:0,opacity:1,duration:.45,ease:'back.out(2)'});
+}
+function closeTour(after){
+  if(T){T.kill();T=null;}
+  Snd.engineStop();
+  const fin=()=>{tourEl.hidden=true;tsv.innerHTML='';E={};$('polaroid').hidden=true;$('tourEnd').hidden=true;document.documentElement.style.overflow='';G.set(tourEl,{clearProps:'clipPath'});if(after)after();};
+  if(G&&!reduce)G.to(tourEl,{clipPath:'circle(0% at 50% 55%)',duration:.6,ease:'power2.in',onComplete:fin});else fin();
+}
+$('popGo').addEventListener('click',()=>tourStart(cur));
+$('popLater').addEventListener('click',hideExplore);
+$('exploreBtn').addEventListener('click',()=>{if(!moving)tourStart(cur);});
+$('tClose').addEventListener('click',()=>closeTour());
+$('tBack').addEventListener('click',()=>closeTour());
+$('tReplay').addEventListener('click',()=>tourStart(tourIdx));
+$('tNext').addEventListener('click',()=>closeTour(()=>setTimeout(goNext,150)));
+document.addEventListener('keydown',e=>{if(!tourEl.hidden&&e.key==='Escape')closeTour();});
 
 /* ---------- Boot ---------- */
 jump(0);
